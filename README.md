@@ -1,0 +1,86 @@
+# ON TOP
+
+A wide, heavy display typeface drawn from the ON TOP logo. The logo holds four letters, O, N, T and
+P; every other glyph is designed in their logic, from measurements taken off the logo, and drawn as
+vectors in code. No outline comes from another font.
+
+![ON TOP specimen](specimen/specimen.png)
+
+**Kurz auf Deutsch:** ON TOP ist eine eigene Schrift, gezeichnet aus dem ON-TOP-Logo. Alle Rechte
+liegen bei @lrkqz (siehe [LICENSE](LICENSE)); wer sie nutzen möchte, fragt über GitHub an. Die
+Dateien zum Benutzen liegen in `fonts/`, das Musterblatt in `specimen/`.
+
+## What is in it
+
+- **Capitals A–Z, Ä Ö Ü ẞ**; lower case is set on the same forms, so a word typed in any case sets
+  in capitals.
+- **Figures 0–9** and **. , : ; … - – — · ? ! ' " ’ ‘ ‚ “ „ ” « » ‹ › / | & # + = < > × * _ ( ) [ ]
+  % € $ @ °**.
+- **Spacing and kerning** (pair kerning in GPOS), calibrated on the logo, so that "ON TOP" set in
+  the face falls on the logo; every kerned pair is checked so that no two outlines come too near.
+- **Stylistic sets:** `ss01` round A (and Ä), `ss02` R with a long leg, `ss03` S with square ends,
+  `ss04` square E.
+
+| File | For |
+|---|---|
+| `fonts/otf/ONTOP-Regular.otf` | Design apps (CFF outlines) |
+| `fonts/ttf/ONTOP-Regular.ttf` | Office apps and systems (TrueType outlines) |
+| `fonts/webfonts/ONTOP-Regular.woff2` | The web |
+
+## On the web
+
+```css
+@font-face {
+  font-family: "ON TOP";
+  src: url("ONTOP-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+.mark {
+  font-family: "ON TOP", sans-serif;
+  font-weight: 400;
+  font-synthesis: none;   /* there is one weight; never let the browser fake a bold */
+  letter-spacing: 0;      /* the face is spaced as the logo is */
+}
+.mark.round-a { font-feature-settings: "ss01" 1; }
+```
+
+The caps sit in the middle of the line box (ascender 950, descender −250, cap height 700 at 1000
+units to the em), so any `line-height` centres them.
+
+## How it is made
+
+Everything is in `sources/` and is rebuilt with one command:
+
+```
+pip install -r requirements.txt
+python build.py
+```
+
+- `sources/geometry.py`: the drawing primitives: rectangles whose corners are the logo's measured
+  corner curve, diagonal bands, boolean operations (skia-pathops).
+- `sources/glyphs.py`: every glyph as geometry, with the rules it follows.
+- `sources/spacing.py`: sidebearings and kerning from the outlines' profiles, calibrated on the logo.
+- `build.py`: writes the OTF, TTF and WOFF2 and checks every kerned pair in two dimensions
+  (shapely); `font.json` holds the names, the version and the licence line.
+- `docs/MEASUREMENTS.md`: what was measured in the logo, the rules derived from it, and how well
+  the result fits.
+- `tools/`: `sheet.py` (every glyph large), `words.py` (set text), `overlay.py` and `fit_report.py`
+  (the face over the logo, measured), `lint_outlines.py` (short segments and curves, sharp corners
+  left by the boolean operations), `check_spacing.py`.
+- `specimen/index.html`: the specimen; open it through a local web server
+  (`python -m http.server` in this folder, then `/specimen/`).
+- `reference/`: the logo the face was drawn from.
+
+## Fit to the logo
+
+"ON TOP" set in the face at the logo's cap height, laid over the logo
+(`python tools/fit_report.py fonts/ttf/ONTOP-Regular.ttf reference/on-top.png`): the edges lie on
+average 0.52 px from the logo's, 95 % of them within 1.32 px, at a cap height of 164 px. The logo's
+two Os differ from each other by 2.4 px; the face has one O between them.
+
+## Licence
+
+All rights reserved, see [LICENSE](LICENSE). To use the font, ask
+[@lrkqz on GitHub](https://github.com/lrkqz).

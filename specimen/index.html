@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ON TOP – Schriftmuster</title>
+<style>
+  @font-face {
+    font-family: "ON TOP";
+    src: url("../fonts/webfonts/ONTOP-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: block;
+  }
+  :root {
+    --ground: #0a0b0f;
+    --ink: #f4f4f5;
+    --ink-2: rgb(244 244 245 / 0.62);
+    --ink-3: rgb(244 244 245 / 0.38);
+    --hair: rgb(244 244 245 / 0.10);
+    --feat: normal;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--ground); color: var(--ink); }
+  body { font: 13px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .face { font-family: "ON TOP", sans-serif; font-feature-settings: var(--feat); }
+  main { max-width: 1440px; margin: 0 auto; padding: 56px 48px 96px; }
+  section { padding: 40px 0; border-top: 1px solid var(--hair); }
+  section:first-of-type { border-top: 0; padding-top: 0; }
+  h2 { margin: 0 0 22px; font: 500 12px/1 system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+  .hero { font-size: clamp(64px, 11vw, 168px); line-height: 1; white-space: nowrap; }
+  .switches { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 0; }
+  .switches label { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--hair); border-radius: 999px; color: var(--ink-2); cursor: pointer; user-select: none; }
+  .switches input { accent-color: #fff; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
+  .cell { background: var(--ground); height: 132px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  .cell .g { font-size: 64px; line-height: 1; }
+  .cell .n { position: absolute; left: 8px; bottom: 6px; font: 10px/1 system-ui, sans-serif; color: var(--ink-3); }
+  .sizes .row { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 24px; padding: 14px 0; border-top: 1px solid var(--hair); }
+  .sizes .row:first-child { border-top: 0; }
+  .sizes .k { color: var(--ink-3); font-size: 12px; }
+  .sizes .t { display: flex; flex-wrap: wrap; gap: 14px 40px; align-items: center; }
+  .lines .l { font-size: 44px; line-height: 1.5; }
+  .lines .m { font-size: 24px; line-height: 1.6; }
+  .ref img { display: block; width: 100%; max-width: 1756px; height: auto; image-rendering: auto; }
+  .ref .pair { display: grid; gap: 18px; }
+  .ref p { color: var(--ink-3); margin: 6px 0 0; }
+  @media (max-width: 700px) { main { padding: 32px 16px 64px; } .sizes .row { grid-template-columns: 1fr; gap: 8px; } }
+</style>
+</head>
+<body>
+<main>
+  <section>
+    <div class="face hero">ON TOP</div>
+    <div class="switches" id="switches"></div>
+  </section>
+
+  <section class="sizes">
+    <h2>In ONTRACK, in den Größen der Seite</h2>
+    <div class="row"><div class="k">15 px</div><div class="t face" style="font-size:15px">ON TRACK</div></div>
+    <div class="row"><div class="k">16 px</div><div class="t face" style="font-size:16px"><span>OPEN LOOPS</span><span>CURRENT LOOPS</span><span>ERLEDIGT</span><span>GELÖSCHT</span><span>BEDIENUNG</span></div></div>
+    <div class="row"><div class="k">18 px</div><div class="t face" style="font-size:18px">ONTRACK</div></div>
+    <div class="row"><div class="k">24 px</div><div class="t face" style="font-size:24px"><span>ERLEDIGT</span><span>GELÖSCHT</span><span>BEDIENUNG</span></div></div>
+  </section>
+
+  <section>
+    <h2>Zeichensatz</h2>
+    <div class="grid face" id="grid"></div>
+  </section>
+
+  <section class="lines">
+    <h2>Gesetzt</h2>
+    <div class="face l">THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG</div>
+    <div class="face l">ZWÖLF BOXKÄMPFER JAGEN VIKTOR QUER ÜBER DEN GROSSEN SYLTER DEICH</div>
+    <div class="face l">AVATAR · TAPAS · FLY · WAVY · LT · PA</div>
+    <div class="face m">0123456789 — 12:30 · 50% · 12€ · #1 · A&amp;B · (OK) · [1] · „JA“ ‚NEIN‘ · «GUT» · HALLO, WELT! WARUM? INFO@ONTOP · STRASSE · STRAẞE · 3×4=12 · 20° · $5 …</div>
+  </section>
+
+  <section class="ref">
+    <h2>Gegen das Bild</h2>
+    <div class="pair">
+      <img src="overlay.png" alt="">
+      <p>Rot: das ON-TOP-Bild. Grün: „ON TOP“ in der Schrift, gleiche Versalhöhe, gleiche Grundlinie. Gelb: beide.</p>
+    </div>
+  </section>
+</main>
+<script>
+  const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜẞ0123456789.,:;…-–—·?!'\"’‘‚“„”«»‹›/|&#+=<>×*_()[]%€$@°";
+  const grid = document.getElementById("grid");
+  for (const ch of CHARS) {
+    const c = document.createElement("div");
+    c.className = "cell";
+    const g = document.createElement("div");
+    g.className = "g"; g.textContent = ch;
+    const n = document.createElement("div");
+    n.className = "n"; n.textContent = "U+" + ch.codePointAt(0).toString(16).toUpperCase().padStart(4, "0");
+    c.append(g, n); grid.append(c);
+  }
+  const SETS = [["ss01", "A rund"], ["ss02", "R langes Bein"], ["ss03", "S gerade Enden"], ["ss04", "E eckig"]];
+  const box = document.getElementById("switches");
+  const on = new Set(new URLSearchParams(location.search).get("ss")?.split(",").filter(Boolean) ?? []);
+  function apply() {
+    document.documentElement.style.setProperty("--feat", on.size ? [...on].map((t) => `"${t}" 1`).join(", ") : "normal");
+  }
+  for (const [tag, label] of SETS) {
+    const l = document.createElement("label");
+    const i = document.createElement("input");
+    i.type = "checkbox"; i.checked = on.has(tag);
+    i.onchange = () => { i.checked ? on.add(tag) : on.delete(tag); apply(); };
+    l.append(i, document.createTextNode(label));
+    box.append(l);
+  }
+  apply();
+</script>
+</body>
+</html>
