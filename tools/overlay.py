@@ -1,6 +1,6 @@
 """Lay "ON TOP" set in the built font over his image at the same cap height and measure.
 
-python tools/overlay.py fonts/ttf/ONTOP-Regular.ttf reference/on-top.png build/overlay
+python tools/overlay.py fonts/ttf/OnTop-Regular.ttf reference/on-top.png build/overlay
 
 Writes overlay.png (image red, font green: where both are, yellow), diff.png (what differs,
 magnified), and prints the deviation: pixels that differ, the share of the letters' area, and per

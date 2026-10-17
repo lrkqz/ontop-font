@@ -138,7 +138,7 @@ the round A, C and D. He ordered:
 
 ## How well "ON TOP" in the font falls on the image
 
-`python tools/fit_report.py fonts/ttf/ONTOP-Regular.ttf reference/on-top.png` sets "ON TOP" over the
+`python tools/fit_report.py fonts/ttf/OnTop-Regular.ttf reference/on-top.png` sets "ON TOP" over the
 image at the same cap height, left edge and baseline and compares every edge point (rows and
 columns, sub-pixel). Version 1.000: mean deviation 0.52 px, 95 % of the edge points within 1.32 px,
 at a cap height of 163.6 px. The −1 px run from the first O's right side through the second O's left

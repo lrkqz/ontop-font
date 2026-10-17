@@ -1,6 +1,6 @@
 """Edge-by-edge deviation of "ON TOP" in the font from his image, in image pixels.
 
-python tools/fit_report.py fonts/ttf/ONTOP-Regular.ttf reference/on-top.png
+python tools/fit_report.py fonts/ttf/OnTop-Regular.ttf reference/on-top.png
 
 Every row and every column of the image is scanned for the sub-pixel places where the ink edge
 crosses half coverage, in the image and in the font set over it (same cap height, same left

@@ -6,9 +6,10 @@ vectors in code. No outline comes from another font.
 
 ![ON TOP specimen](specimen/specimen.png)
 
-**Kurz auf Deutsch:** ON TOP ist eine eigene Schrift, gezeichnet aus dem ON-TOP-Logo. Alle Rechte
-liegen bei @lrkqz (siehe [LICENSE](LICENSE)); wer sie nutzen möchte, fragt über GitHub an. Die
-Dateien zum Benutzen liegen in `fonts/`, das Musterblatt in `specimen/`.
+**Kurz auf Deutsch:** ON TOP ist eine eigene Schrift von @lrkqz, gezeichnet aus dem ON-TOP-Logo. Sie
+steht unter der SIL Open Font License 1.1 (siehe [OFL.txt](OFL.txt)): jeder darf sie frei benutzen,
+auch kommerziell, verändern und weitergeben; die Urheberangabe bleibt in den Dateien. Die Dateien
+zum Benutzen liegen in `fonts/`, das Musterblatt in `specimen/`.
 
 ## What is in it
 
@@ -23,22 +24,22 @@ Dateien zum Benutzen liegen in `fonts/`, das Musterblatt in `specimen/`.
 
 | File | For |
 |---|---|
-| `fonts/otf/ONTOP-Regular.otf` | Design apps (CFF outlines) |
-| `fonts/ttf/ONTOP-Regular.ttf` | Office apps and systems (TrueType outlines) |
-| `fonts/webfonts/ONTOP-Regular.woff2` | The web |
+| `fonts/otf/OnTop-Regular.otf` | Design apps (CFF outlines) |
+| `fonts/ttf/OnTop-Regular.ttf` | Office apps and systems (TrueType outlines) |
+| `fonts/webfonts/OnTop-Regular.woff2` | The web |
 
 ## On the web
 
 ```css
 @font-face {
-  font-family: "ON TOP";
-  src: url("ONTOP-Regular.woff2") format("woff2");
+  font-family: "On Top";
+  src: url("OnTop-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 .mark {
-  font-family: "ON TOP", sans-serif;
+  font-family: "On Top", sans-serif;
   font-weight: 400;
   font-synthesis: none;   /* there is one weight; never let the browser fake a bold */
   letter-spacing: 0;      /* the face is spaced as the logo is */
@@ -76,11 +77,14 @@ python build.py
 ## Fit to the logo
 
 "ON TOP" set in the face at the logo's cap height, laid over the logo
-(`python tools/fit_report.py fonts/ttf/ONTOP-Regular.ttf reference/on-top.png`): the edges lie on
+(`python tools/fit_report.py fonts/ttf/OnTop-Regular.ttf reference/on-top.png`): the edges lie on
 average 0.52 px from the logo's, 95 % of them within 1.32 px, at a cap height of 164 px. The logo's
 two Os differ from each other by 2.4 px; the face has one O between them.
 
 ## Licence
 
-All rights reserved, see [LICENSE](LICENSE). To use the font, ask
-[@lrkqz on GitHub](https://github.com/lrkqz).
+Copyright 2026 The On Top Project Authors (https://github.com/lrkqz/ontop-font). Designed by
+[@lrkqz](https://github.com/lrkqz).
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is
+copied in [OFL.txt](OFL.txt), and is also available with a FAQ at https://openfontlicense.org.

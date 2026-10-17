@@ -1,14 +1,16 @@
 {
-  "family": "ON TOP",
-  "psName": "ONTOP",
-  "fileName": "ONTOP",
+  "family": "On Top",
+  "psName": "OnTop",
+  "fileName": "OnTop",
   "version": "1.000",
-  "copyright": "Copyright 2026 @lrkqz. All rights reserved.",
+  "copyright": "Copyright 2026 The On Top Project Authors (https://github.com/lrkqz/ontop-font)",
   "designer": "@lrkqz",
+  "designerURL": "https://github.com/lrkqz",
   "manufacturer": "@lrkqz",
+  "vendorURL": "https://github.com/lrkqz/ontop-font",
   "description": "A wide, heavy display face drawn from the ON TOP logo.",
-  "license": "All rights reserved. The fonts, their designs and their sources may not be used, copied, modified or distributed without the prior written permission of @lrkqz. To license the font, contact @lrkqz on GitHub: https://github.com/lrkqz",
-  "licenseURL": "https://github.com/lrkqz",
+  "license": "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://openfontlicense.org",
+  "licenseURL": "https://openfontlicense.org",
   "vendor": "NONE",
-  "fsType": 8
+  "fsType": 0
 }

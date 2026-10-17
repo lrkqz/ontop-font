@@ -18,7 +18,7 @@ Units: 1000 to the em, cap height 700, baseline 0. Each builder returns a pathop
 ink starting at x = 0 (spacing is added in spacing.py).
 """
 import math
-from geometry import rect, poly, band, union, minus, clip, mirror_x, mirror_y, rotate180, translate, line_through
+from geometry import rect, poly, band, union, minus, clip, mirror_x, mirror_y, rotate180, translate, line_through, scale
 
 CH = 700
 
@@ -899,3 +899,531 @@ def germandbls_cap(W=1180, top=980, gap=130):
 @glyph(".notdef")
 def notdef(W=600):
     return minus(rect(0, 0, W, CH), rect(60, 60, W - 60, CH - 60))
+
+
+# =============================================================================================
+# Accents (GF Latin Core)
+# =============================================================================================
+# Every accent is drawn once, in the place and the weight of the approved dieresis: its foot 100
+# above the cap height (y 800), its strokes as heavy as the dots (190 upright, 150 flat: a dot is
+# 0.72 of the letters' weight). The accents with two strokes and a counter (^ ˇ ˘ ˚ ~) rise to
+# 200, so the counter stays open. The marks below hang from the baseline to the descender (-250).
+# Small marks round with corners scaled to their size, as the small signs ( ) % ° do.
+#
+# The new designs are shown to @lrkqz as variants; VARIANTS holds them, VARIANT the one in the
+# font (until he chooses, the first).
+
+ACC_Y, ACC_H, ACC_TALL = CH + DOT_GAP, DOT_H, 200
+ACC_WEIGHT = DOT_W / V                 # 0.72: the dot against the stem
+ACC_GAP = DOT_SPREAD - DOT_W           # 150: the white between the two dots
+
+VARIANTS = {}       # design -> {key: (label, builder)}
+VARIANT = {}        # design -> key of the variant in the font
+DESIGN_NAMES = {}   # design -> its German name on the review page
+
+
+def variant(design, key, label):
+    def deco(fn):
+        VARIANTS.setdefault(design, {})[key] = (label, fn)
+        VARIANT.setdefault(design, key)
+        return fn
+    return deco
+
+
+def drawn(design):
+    return VARIANTS[design][VARIANT[design]][1]()
+
+
+def mid_x(p):
+    b = p.bounds
+    return (b[0] + b[2]) / 2
+
+
+def centred(p, cx):
+    return translate(p, cx - mid_x(p))
+
+
+# --- acute, grave, double acute ------------------------------------------------------------
+
+ACUTE_SLOPE = {"1": ("wie die Schräge des N", 1.2246), "2": ("steil", 0.7), "3": ("flach", 2.0)}
+DESIGN_NAMES["acute"] = "Akut, Gravis, Doppelakut"
+
+
+def acute_at(m):
+    """A stroke leaning right at slope m, its ends cut level as the N's diagonal ends."""
+    th = diag_h(m) * ACC_WEIGHT
+    return translate(band(m, 0, th, ACC_Y, ACC_Y + ACC_H), -m * ACC_Y)
+
+
+for _k, (_label, _m) in ACUTE_SLOPE.items():
+    variant("acute", _k, _label)(lambda m=_m: acute_at(m))
+
+
+def acute_mark():
+    return drawn("acute")
+
+
+def grave_mark():
+    a = drawn("acute")
+    return mirror_x(a, mid_x(a))
+
+
+def hungarumlaut_mark():
+    m = ACUTE_SLOPE[VARIANT["acute"]][1]
+    a = acute_at(m)
+    return union(a, translate(a, diag_h(m) * ACC_WEIGHT + ACC_GAP))
+
+
+# --- circumflex and caron ----------------------------------------------------------------------
+
+DESIGN_NAMES["circumflex"] = "Zirkumflex und Hatschek"
+
+
+def roof(W, H, vt, f=0, y0=ACC_Y):
+    """A ^: two strokes vt thick measured upright, meeting in a point (f = 0) or a flat top f wide;
+    the counter below them a triangle."""
+    m = (W / 2 - f / 2) / H
+    th = vt * m
+    outer = poly((0, y0), (W, y0), (W / 2 + f / 2, y0 + H), (W / 2 - f / 2, y0 + H))
+    y_in = (W / 2 - th) / m
+    return minus(outer, poly((th, y0 - 1), (W - th, y0 - 1), (W / 2, y0 + y_in)))
+
+
+@variant("circumflex", "1", "spitz")
+def circumflex_point():
+    return roof(700, ACC_TALL, 125)
+
+
+@variant("circumflex", "2", "oben flach wie das A")
+def circumflex_flat():
+    return roof(720, ACC_TALL, 125, 200)
+
+
+@variant("circumflex", "3", "flacher und breiter")
+def circumflex_wide():
+    return roof(820, 180, 115)
+
+
+def circumflex_mark():
+    return drawn("circumflex")
+
+
+def caron_mark():
+    c = drawn("circumflex")
+    b = c.bounds
+    return mirror_y(c, (b[1] + b[3]) / 2)
+
+
+# --- tilde ---------------------------------------------------------------------------------------
+
+DESIGN_NAMES["tilde"] = "Tilde"
+
+
+def wave(W, H, tw, vt, k=0.6, corner=130, y0=ACC_Y):
+    """An arch and then a cup sharing their middle stroke: a square wave with round corners
+    (corner None: square). tw: the upright strokes, vt: the flat ones."""
+    xm = W / 2 - tw / 2
+    cr = (min(corner, (xm + tw) / 2), min(H, 110), k) if corner else None
+    ci = (max(10, cr[0] - tw), max(10, cr[1] - vt), 0.55) if corner else None
+    arch = minus(rect(0, y0, xm + tw, y0 + H, cr, cr, None, None), rect(tw, y0 - 10, xm, y0 + H - vt, ci, ci, None, None))
+    cup = minus(rect(xm, y0, W, y0 + H, None, None, cr, cr), rect(xm + tw, y0 + vt, W - tw, y0 + H + 10, None, None, ci, ci))
+    return union(arch, cup)
+
+
+@variant("tilde", "1", "Welle, runde Ecken")
+def tilde_round():
+    return wave(620, 180, 180, 85)
+
+
+@variant("tilde", "2", "Welle, weicher")
+def tilde_soft():
+    return wave(660, 170, 170, 80, k=0.5, corner=160)
+
+
+@variant("tilde", "3", "Welle, eckig")
+def tilde_square():
+    return wave(620, 170, 170, 80, corner=None)
+
+
+def tilde_mark():
+    return drawn("tilde")
+
+
+# --- macron, dot ---------------------------------------------------------------------------------
+
+DESIGN_NAMES["macron"] = "Makron (Strich)"
+MACRON_W = 2 * DOT_W / 2 + DOT_SPREAD   # 530: as wide as the dieresis
+
+
+@variant("macron", "1", "so hoch wie die Punkte")
+def macron_dot():
+    return rect(0, ACC_Y, MACRON_W, ACC_Y + ACC_H)
+
+
+@variant("macron", "2", "leichter")
+def macron_light():
+    return rect(0, ACC_Y, MACRON_W, ACC_Y + 120)
+
+
+def macron_mark():
+    return drawn("macron")
+
+
+def dot_mark():
+    return rect(0, ACC_Y, DOT_W, ACC_Y + DOT_H)
+
+
+def dieresis_mark():
+    return dots(DOT_SPREAD / 2 + DOT_W / 2)
+
+
+# --- breve ---------------------------------------------------------------------------------------
+
+DESIGN_NAMES["breve"] = "Breve (Bogen)"
+
+
+def cup_mark(W, H, side, bar, y0=ACC_Y):
+    """The O's lower half, open at the top; its corners the O's, scaled to the height."""
+    s = H / 300
+    c = (234 * s, 177 * s, 0.605)
+    ci = (max(10, c[0] - side), max(10, c[1] - bar), 0.55)
+    return minus(rect(0, y0, W, y0 + H, None, None, c, c), rect(side, y0 + bar, W - side, y0 + H + 10, None, None, ci, ci))
+
+
+@variant("breve", "1", "tief")
+def breve_deep():
+    return cup_mark(560, 180, 170, 80)
+
+
+@variant("breve", "2", "flach")
+def breve_flat():
+    return cup_mark(560, 150, 160, 70)
+
+
+def breve_mark():
+    return drawn("breve")
+
+
+# --- ring ----------------------------------------------------------------------------------------
+
+DESIGN_NAMES["ring"] = "Ring"
+
+
+def degree_scaled(s, y0=ACC_Y):
+    """The approved degree sign, scaled: its corners and proportions kept."""
+    w, h, side, bar = 400 * s, 290 * s, 140 * s, 100 * s
+    co = (SMALL_O[0] * s, SMALL_O[1] * s, SMALL_O[2])
+    ci = (max(6, SMALL_C[0] * s), max(6, SMALL_C[1] * s), SMALL_C[2])
+    return minus(rect(0, y0, w, y0 + h, co, co, co, co), rect(side, y0 + bar, w - side, y0 + h - bar, ci, ci, ci, ci))
+
+
+@variant("ring", "1", "das Gradzeichen, kleiner")
+def ring_degree():
+    return degree_scaled(ACC_WEIGHT)
+
+
+@variant("ring", "2", "das Gradzeichen, größer")
+def ring_large():
+    return degree_scaled(0.86)
+
+
+def ring_mark():
+    return drawn("ring")
+
+
+# --- marks below ---------------------------------------------------------------------------------
+
+DESIGN_NAMES["cedilla"] = "Cedille (Ç Ş)"
+DESC = -250
+
+
+def hook_left(W=300, depth=-DESC, stem=170, bar=110):
+    """A stem down from the letter, its foot turning left with the O's corner (scaled): the
+    cedilla as a small J."""
+    c = (min(W - 20, 234 * 0.7), min(depth, 177 * 0.7), 0.605)
+    ci = (40, 34, 0.55)
+    out = rect(-W + stem / 2, -depth, stem / 2, 0, None, None, c, None)
+    return minus(out, rect(-W + stem / 2 - 10, -depth + bar, -stem / 2, 10, None, None, ci, None))
+
+
+@variant("cedilla", "1", "Haken nach links")
+def cedilla_hook():
+    return hook_left()
+
+
+@variant("cedilla", "2", "kleiner Bogen, offen nach links")
+def cedilla_bowl(W=300, depth=-DESC, neck=50, neck_w=130, side=130, bar=72):
+    # A short neck down from the letter, then a small bowl open on the left, its right corners
+    # the O's scaled to the bowl's height.
+    h = depth - neck
+    s = h / CH
+    c = (234 * s * 2, 177 * s * 2 * 0.5, 0.605)
+    ci = (max(10, c[0] - side), max(10, c[1] - bar), 0.55)
+    x0 = -W / 2 + 20
+    bowl = minus(rect(x0, -depth, x0 + W, -neck, None, c, c, None),
+                 rect(x0 - 10, -depth + bar, x0 + W - side, -neck - bar, None, ci, ci, None))
+    return union(bowl, rect(-neck_w / 2, -neck - 1, neck_w / 2, 0))
+
+
+def comma_mark(s=ACC_WEIGHT, gap=60):
+    """The approved comma at the size of the dots, below the line."""
+    c = scale(comma_shape(), s)
+    b = c.bounds
+    return translate(c, -mid_x(c), -gap - b[3])
+
+
+@variant("cedilla", "3", "Komma (wie bei Ș Ț)")
+def cedilla_comma():
+    return comma_mark()
+
+
+def cedilla_mark():
+    return drawn("cedilla")
+
+
+DESIGN_NAMES["commaaccent"] = "Komma unten (Ș Ț Ģ Ķ Ļ Ņ)"
+
+
+@variant("commaaccent", "1", "so groß wie die Punkte")
+def commaaccent_dot():
+    return comma_mark()
+
+
+@variant("commaaccent", "2", "kleiner")
+def commaaccent_small():
+    return comma_mark(0.6, 50)
+
+
+def commaaccent_mark():
+    return drawn("commaaccent")
+
+
+DESIGN_NAMES["ogonek"] = "Ogonek (Ą Ę Į Ų)"
+
+
+@variant("ogonek", "1", "Haken nach rechts")
+def ogonek_hook(W=310, depth=-DESC, stem=170, bar=110):
+    # The cedilla's hook turned round: down from the letter's foot, turning right.
+    return mirror_x(hook_left(W, depth, stem, bar), 0)
+
+
+@variant("ogonek", "2", "Haken nach rechts, Ende hoch")
+def ogonek_j(W=330, depth=-DESC, stem=160, bar=100, stub=80):
+    out = mirror_x(hook_left(W, depth, stem, bar), 0)
+    end = W - stem / 2
+    return union(out, rect(end - 100, -depth + bar - 1, end, -depth + bar + stub))
+
+
+def ogonek_mark():
+    return drawn("ogonek")
+
+
+def caronvertical_mark():
+    """The caron beside a stem (Ľ): the approved closing quote at the size of the dots."""
+    q = scale(quote_shape(), ACC_WEIGHT, ACC_WEIGHT, 0, CH)
+    return translate(q, -q.bounds[0])
+
+
+MARKS = {"grave": grave_mark, "acute": acute_mark, "circumflex": circumflex_mark, "tilde": tilde_mark,
+         "macron": macron_mark, "breve": breve_mark, "dotaccent": dot_mark, "dieresis": dieresis_mark,
+         "ring": ring_mark, "hungarumlaut": hungarumlaut_mark, "caron": caron_mark,
+         "commaaccent": commaaccent_mark, "cedilla": cedilla_mark, "ogonek": ogonek_mark,
+         "caronvertical": caronvertical_mark}
+MARK_DESIGN = {"grave": "acute", "acute": "acute", "hungarumlaut": "acute", "circumflex": "circumflex",
+               "caron": "circumflex", "tilde": "tilde", "macron": "macron", "breve": "breve", "ring": "ring",
+               "cedilla": "cedilla", "commaaccent": "commaaccent", "ogonek": "ogonek"}
+BELOW = {"cedilla", "commaaccent", "ogonek"}
+
+
+# =============================================================================================
+# The accented capitals (GF Latin Core)
+# =============================================================================================
+# A letter and its marks, from Unicode's decompositions. An accent stands over the middle of the
+# letter's ink unless TOP_X says otherwise; a mark below hangs from the middle of its foot, the
+# ogonek from the last stroke on the right (OGONEK_X: where its stem stands). As in Latvian, G K
+# L N take a comma below for their cedilla; L takes the caron beside its stem. The letter keeps
+# its spacing (build.py), so an accent wider than an I reaches into its sidebearings.
+
+import unicodedata                   # noqa: E402
+from fontTools import agl            # noqa: E402
+
+COMBINING = {0x300: "grave", 0x301: "acute", 0x302: "circumflex", 0x303: "tilde", 0x304: "macron",
+             0x306: "breve", 0x307: "dotaccent", 0x308: "dieresis", 0x30A: "ring", 0x30B: "hungarumlaut",
+             0x30C: "caron", 0x326: "commaaccent", 0x327: "cedilla", 0x328: "ogonek"}
+LATIN_CORE_ACCENTED = [
+    0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC7, 0xC8, 0xC9, 0xCA, 0xCB, 0xCC, 0xCD, 0xCE, 0xCF, 0xD1, 0xD2, 0xD3,
+    0xD4, 0xD5, 0xD9, 0xDA, 0xDB, 0xDD, 0x100, 0x102, 0x104, 0x106, 0x10A, 0x10C, 0x10E, 0x112, 0x116, 0x118,
+    0x11A, 0x11E, 0x120, 0x122, 0x12A, 0x12E, 0x130, 0x136, 0x139, 0x13B, 0x13D, 0x143, 0x145, 0x147, 0x150,
+    0x154, 0x158, 0x15A, 0x15E, 0x160, 0x164, 0x16A, 0x16E, 0x170, 0x172, 0x174, 0x176, 0x178, 0x179, 0x17B,
+    0x17D, 0x218, 0x21A, 0x1E80, 0x1E82, 0x1E84, 0x1EF2]
+COMMA_FOR_CEDILLA = {"G", "K", "L", "N"}
+TOP_X = {"L": V / 2 + 60}            # over the L's stem, not over the white beside it
+OGONEK_X = {"A": 1420 - diag_h(540 / 700) / 2, "E": 1120 - 200, "I": V / 2, "U": 1300 - 128}
+COMPOSITE = {}                        # name -> (base, [marks])
+DEPENDS = {}                          # name -> the designs it shows
+
+
+def glyph_name(code):
+    return agl.UV2AGL.get(code) or f"uni{code:04X}"
+
+
+def base_of(name):
+    return COMPOSITE[name][0] if name in COMPOSITE else None
+
+
+def compose(base, marks):
+    p = G[base]()
+    b = p.bounds
+    out = [p]
+    for mk in marks:
+        m = MARKS[mk]()
+        if mk == "caronvertical":
+            out.append(translate(m, V + 70))
+        elif mk == "ogonek":
+            out.append(translate(m, OGONEK_X[base]))
+        elif mk in BELOW:
+            out.append(centred(m, mid_x(p)))
+        else:
+            out.append(centred(m, TOP_X.get(base, (b[0] + b[2]) / 2)))
+    return union(*out)
+
+
+def _register(code):
+    ch = chr(code)
+    parts = unicodedata.decomposition(ch).split()
+    base = chr(int(parts[0], 16))
+    marks = [COMBINING[int(x, 16)] for x in parts[1:]]
+    if base in COMMA_FOR_CEDILLA and marks == ["cedilla"]:
+        marks = ["commaaccent"]
+    if base == "L" and marks == ["caron"]:
+        marks = ["caronvertical"]
+    name = glyph_name(code)
+    COMPOSITE[name] = (base, marks)
+    DEPENDS[name] = sorted({MARK_DESIGN[m] for m in marks if m in MARK_DESIGN})
+    glyph(name, code)(lambda base=base, marks=marks: compose(base, marks))
+
+
+for _code in LATIN_CORE_ACCENTED:
+    _register(_code)
+
+
+# =============================================================================================
+# Letters with a stroke (Ø Đ Ð Ħ Ł)
+# =============================================================================================
+# The stroke is either the Euro's light bar (110) or the three-storey bar (172); the letter under
+# it is the approved one and keeps its spacing.
+
+DESIGN_NAMES["slashO"] = "Ø"
+DESIGN_NAMES["barD"] = "Đ Ð"
+DESIGN_NAMES["barH"] = "Ħ"
+DESIGN_NAMES["slashL"] = "Ł"
+LIGHT_BAR = 110
+
+
+def slash_through(m, th, cx, cy, y0, y1):
+    a = line_through(cx, cy, m)
+    return band(m, a - th / 2, a + th / 2, y0, y1)
+
+
+def o_outer(W=1333):
+    return rect(0, 0, W, CH, BIG, BIG, BIG, BIG)
+
+
+@variant("slashO", "1", "leichter Strich von Ecke zu Ecke")
+def oslash_light(W=1333):
+    m = (W - 2 * 120) / CH
+    th = LIGHT_BAR * STRETCH * math.sqrt(1 + (m / STRETCH) ** 2)
+    s = clip(slash_through(m, th, W / 2, CH / 2, -10, CH + 10), o_outer(W))
+    return union(O(W), s)
+
+
+@variant("slashO", "2", "wie der Schrägstrich, über das O hinaus")
+def oslash_through(W=1333, over=70):
+    m = 0.8
+    th = diag_h(m) * 0.6
+    s = slash_through(m, th, W / 2, CH / 2, -over, CH + over)
+    return union(O(W), s)
+
+
+@variant("slashO", "3", "Schräge des N, im O")
+def oslash_n(W=1333):
+    m = 1.2246
+    th = diag_h(m) * 0.7
+    s = clip(slash_through(m, th, W / 2, CH / 2, -10, CH + 10), o_outer(W))
+    return union(O(W), s)
+
+
+def d_bar(t, out=130, reach=200):
+    return rect(-out, CH / 2 - t / 2, V + reach, CH / 2 + t / 2)
+
+
+@variant("barD", "1", "leichter Balken wie beim €")
+def dcroat_light():
+    return union(D(), d_bar(LIGHT_BAR))
+
+
+@variant("barD", "2", "Balken der dreistöckigen Buchstaben (172)")
+def dcroat_bar():
+    return union(D(), d_bar(H3))
+
+
+@glyph("Dcroat", 0x110)
+def Dcroat():
+    return drawn("barD")
+
+
+@glyph("Eth", 0xD0)
+def Eth():
+    return drawn("barD")
+
+
+def h_bar(t, W=1300, out=100):
+    y = (CH + (CH + HM) / 2) / 2           # midway between the crossbar's top and the cap height
+    return rect(-out, y - t / 2, W + out, y + t / 2)
+
+
+@variant("barH", "1", "leichter Balken wie beim €")
+def hbar_light():
+    return union(H(), h_bar(LIGHT_BAR))
+
+
+@variant("barH", "2", "Balken der dreistöckigen Buchstaben (172)")
+def hbar_bar():
+    return union(H(), h_bar(H3))
+
+
+@glyph("Hbar", 0x126)
+def Hbar():
+    return drawn("barH")
+
+
+def l_slash(t_upright, m=0.8, cy=420, hy=190):
+    # A stroke rising through the stem, its ends cut level as every diagonal's are.
+    th = t_upright * math.sqrt(1 + (m / STRETCH) ** 2)
+    return slash_through(m, th, V / 2, cy, cy - hy, cy + hy)
+
+
+@variant("slashL", "1", "leichter Strich wie beim €")
+def lslash_light():
+    return union(L(), l_slash(LIGHT_BAR * STRETCH))
+
+
+@variant("slashL", "2", "kräftiger Strich (172)")
+def lslash_bar():
+    return union(L(), l_slash(H3 * STRETCH))
+
+
+@glyph("Lslash", 0x141)
+def Lslash():
+    return drawn("slashL")
+
+
+@glyph("Oslash", 0xD8)
+def Oslash():
+    return drawn("slashO")
+
+
+for _n, _d, _b in (("Dcroat", "barD", "D"), ("Eth", "barD", "D"), ("Hbar", "barH", "H"), ("Lslash", "slashL", "L"),
+                   ("Oslash", "slashO", "O")):
+    COMPOSITE[_n] = (_b, [])
+    DEPENDS[_n] = [_d]

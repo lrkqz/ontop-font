@@ -1,7 +1,7 @@
 """Find outline artifacts in a built font: segments shorter than MIN_SEG units and corners sharper
 than MIN_ANGLE degrees (slivers, steps and spikes left by boolean operations).
 
-python tools/lint_outlines.py fonts/otf/ONTOP-Regular.otf
+python tools/lint_outlines.py fonts/otf/OnTop-Regular.otf
 """
 import math, sys
 from fontTools.ttLib import TTFont
