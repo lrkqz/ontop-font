@@ -4,3 +4,7 @@ __pycache__/
 .DS_Store
 Thumbs.db
 venv/
+sources/build.ninja
+sources/.ninja_log
+.ninja_log
+build.ninja

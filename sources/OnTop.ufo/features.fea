@@ -1,0 +1,20 @@
+languagesystem DFLT dflt;
+languagesystem latn dflt;
+
+feature ss01 {
+  featureNames { name "A rund"; };
+  sub A by A.ss01;
+  sub Adieresis by Adieresis.ss01;
+} ss01;
+feature ss02 {
+  featureNames { name "R langes Bein"; };
+  sub R by R.ss02;
+} ss02;
+feature ss03 {
+  featureNames { name "S gerade Enden"; };
+  sub S by S.ss03;
+} ss03;
+feature ss04 {
+  featureNames { name "E eckig"; };
+  sub E by E.ss04;
+} ss04;

@@ -1,7 +1,11 @@
-"""Build the typeface: python build.py [--review]
+"""Build the typeface: python build.py [--review | --direct]
 
-Draws every glyph from sources/glyphs.py, spaces and kerns it (sources/spacing.py), and writes
-fonts/otf, fonts/ttf and fonts/webfonts (WOFF2). Needs: pip install -r requirements.txt
+Draws every glyph from sources/glyphs.py, spaces and kerns it (sources/spacing.py), writes the
+UFO sources/OnTop.ufo and builds fonts/otf, fonts/ttf and fonts/webfonts (WOFF2) from it with
+Google's builder (gftools builder sources/config.yaml), as Google's toolchain does.
+Needs: pip install -r requirements.txt
+
+--direct writes the fonts straight from fontTools into build/direct instead (no gftools).
 
 --review writes build/review/OnTop-Review.woff2 instead: the font with every design that is still
 to be chosen as character variants (cv01, cv02, ...: value n is variant n), for the review page
@@ -215,6 +219,7 @@ for tag in sorted(by_tag):
     for base, alt, _ in items:
         fea.append(f"  sub {base} by {alt};")
     fea.append(f"}} {tag};")
+FEA_UFO = "\n".join(fea) + "\n"          # the UFO's features.fea: ufo2ft adds GDEF, mark and kern
 for tag, (design, subs) in CV.items():
     fea.append(f"feature {tag} {{")
     for n, alts in subs.items():
@@ -349,6 +354,79 @@ def build_ttf(out):
     fb.save(out)
 
 
+def write_ufo(path):
+    """The UFO that Google's toolchain builds from (gftools builder sources/config.yaml): every glyph
+    as placed and rounded, its anchors, the kerning and the stylistic sets."""
+    import ufoLib2
+    from fontTools.pens.pointPen import SegmentToPointPen
+    major, minor = CONFIG["version"].split(".")
+    ufo = ufoLib2.Font()
+    i = ufo.info
+    i.familyName, i.styleName = FAMILY, STYLE
+    i.styleMapFamilyName, i.styleMapStyleName = FAMILY, "regular"
+    i.versionMajor, i.versionMinor = int(major), int(minor)
+    i.copyright = CONFIG["copyright"]
+    i.openTypeNameDesigner = CONFIG.get("designer")
+    i.openTypeNameDesignerURL = CONFIG.get("designerURL")
+    i.openTypeNameManufacturer = CONFIG.get("manufacturer")
+    i.openTypeNameManufacturerURL = CONFIG.get("vendorURL")
+    i.openTypeNameLicense = CONFIG.get("license")
+    i.openTypeNameLicenseURL = CONFIG.get("licenseURL")
+    i.openTypeNameDescription = CONFIG.get("description")
+    i.postscriptFontName = PS_NAME
+    i.unitsPerEm = UPM
+    i.ascender, i.descender, i.capHeight, i.xHeight = ASC, DESC, 700, 700
+    i.openTypeHheaAscender, i.openTypeHheaDescender, i.openTypeHheaLineGap = ASC, DESC, 0
+    i.openTypeOS2TypoAscender, i.openTypeOS2TypoDescender, i.openTypeOS2TypoLineGap = ASC, DESC, 0
+    ymax = max(paths[n].bounds[3] for n in names if paths[n] is not None)
+    ymin = min(paths[n].bounds[1] for n in names if paths[n] is not None)
+    i.openTypeOS2WinAscent = int(max(ASC, ymax + 10))
+    i.openTypeOS2WinDescent = int(max(-DESC, -ymin + 10))
+    i.openTypeOS2Selection = [7]               # USE_TYPO_METRICS
+    i.openTypeOS2Type = []                     # installable: fsType 0
+    i.openTypeOS2VendorID = CONFIG.get("vendor", "NONE")[:4].ljust(4)
+    i.openTypeOS2WeightClass, i.openTypeOS2WidthClass = 400, 9
+    i.openTypeOS2SubscriptXSize, i.openTypeOS2SubscriptYSize = 650, 600
+    i.openTypeOS2SubscriptXOffset, i.openTypeOS2SubscriptYOffset = 0, 75
+    i.openTypeOS2SuperscriptXSize, i.openTypeOS2SuperscriptYSize = 650, 600
+    i.openTypeOS2SuperscriptXOffset, i.openTypeOS2SuperscriptYOffset = 0, 350
+    i.openTypeOS2StrikeoutSize, i.openTypeOS2StrikeoutPosition = HM_BAR, int(350 + HM_BAR / 2)
+    i.postscriptUnderlinePosition, i.postscriptUnderlineThickness = -120, 80
+    i.openTypeGaspRangeRecords = [{"rangeMaxPPEM": 65535, "rangeGaspBehavior": [0, 1, 2, 3]}]
+    i.openTypeHeadCreated = "2026/10/16 00:00:00"
+    codes = {}
+    for c, n in cmap.items():
+        codes.setdefault(n, []).append(c)
+    for n in names:
+        g = ufo.newGlyph(n)
+        g.width = metrics[n][0]
+        g.unicodes = sorted(codes.get(n, []))
+        if paths[n] is not None:
+            paths[n].draw(TransformPen(RoundingPen(SegmentToPointPen(g.getPointPen())), (1, 0, 0, 1, shift[n], 0)))
+        if n in LETTERS_FOR_MARKS:
+            for kind, (x, y) in anchors_of(n).items():
+                g.appendAnchor({"name": kind, "x": int(round(x)), "y": int(round(y))})
+        if n in GL.COMBINING_MARKS:
+            kind = MARK_ANCHOR.get(GL.COMBINING_MARKS[n], "top")
+            g.appendAnchor({"name": "_" + kind, "x": GL.COMBINING_X, "y": GL.CH if kind == "top" else 0})
+    ufo.lib["public.glyphOrder"] = names
+    ufo.lib["public.openTypeCategories"] = {n: ("mark" if n in GL.COMBINING_MARKS else "base")
+                                            for n in names if paths[n] is not None}
+    ufo.kerning = {(a, b): k for (a, b), k in sorted(kerns.items())}
+    ufo.features.text = FEA_UFO
+    ufo.save(path, overwrite=True)
+
+
+def gftools_build():
+    """Build fonts/ from the UFO with Google's own builder, as their toolchain will."""
+    import shutil, subprocess
+    exe = shutil.which("gftools", path=os.path.dirname(sys.executable)) or shutil.which("gftools")
+    if not exe:
+        sys.exit("gftools not found: pip install -r requirements.txt (or build.py --direct)")
+    env = dict(os.environ, PATH=os.path.dirname(exe) + os.pathsep + os.environ.get("PATH", ""))   # fontmake beside it
+    subprocess.run([exe, "builder", os.path.join(HERE, "sources", "config.yaml")], check=True, cwd=HERE, env=env)
+
+
 def main():
     base = CONFIG["fileName"]
     if REVIEW:
@@ -371,16 +449,23 @@ def main():
         for p in (ttf, woff2):
             print(os.path.relpath(p, HERE), os.path.getsize(p))
         return
-    for d in ("fonts/otf", "fonts/ttf", "fonts/webfonts"):
-        os.makedirs(os.path.join(HERE, d), exist_ok=True)
-    otf = os.path.join(HERE, "fonts/otf", base + "-Regular.otf")
-    ttf = os.path.join(HERE, "fonts/ttf", base + "-Regular.ttf")
-    woff2 = os.path.join(HERE, "fonts/webfonts", base + "-Regular.woff2")
-    build_otf(otf)
-    build_ttf(ttf)
-    f = TTFont(ttf)
-    f.flavor = "woff2"
-    f.save(woff2)
+    write_ufo(os.path.join(HERE, "sources", base + ".ufo"))
+    direct = "--direct" in sys.argv
+    out = os.path.join(HERE, "build", "direct") if direct else os.path.join(HERE, "fonts")
+    otf = os.path.join(out, "otf", base + "-Regular.otf")
+    ttf = os.path.join(out, "ttf", base + "-Regular.ttf")
+    woff2 = os.path.join(out, "webfonts", base + "-Regular.woff2")
+    if direct:
+        # straight from fontTools, without Google's builder (quick, for comparison)
+        for d in ("otf", "ttf", "webfonts"):
+            os.makedirs(os.path.join(out, d), exist_ok=True)
+        build_otf(otf)
+        build_ttf(ttf)
+        f = TTFont(ttf)
+        f.flavor = "woff2"
+        f.save(woff2)
+    else:
+        gftools_build()
     with open(os.path.join(HERE, "build", "features.fea"), "w", encoding="utf-8") as fh:
         fh.write(FEA)
     with open(os.path.join(HERE, "build", "metrics.json"), "w", encoding="utf-8") as fh:

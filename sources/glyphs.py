@@ -1444,7 +1444,9 @@ A_SLOPE = 540 / 700                    # the pointed A's legs: (1420 - 340) / 2 
 
 
 def ae_shape(W=1760, xs=900, round_a=False):
-    """The A's left leg (or the round A's side), the E's stem at xs and its three bars to W."""
+    """The A's left leg (or the round A's side), the E's stem at xs and its three bars to W. The
+    round A of ss01 leaves the Æ pointed: a round Æ reads as FE, the F being the round A without
+    its right side."""
     # on the round side the bars start where the O's corner ends, so it stays the O's
     x_top, x_mid = (BIG[0], V / 2) if round_a else (0, 0)
     bars = union(rect(x_top, Y_T0, W, CH), rect(x_mid, Y_M0, W, Y_M1), rect(xs, 0, W, Y_B1), rect(xs, 0, xs + V, CH))
@@ -1471,12 +1473,6 @@ def AE_narrow():
 @glyph("AE", 0xC6)
 def AE():
     return drawn("AE")
-
-
-@alt("AE.ss01", "AE", "ss01", "A rund")
-def AE_round():
-    W, xs = (1760, 900) if VARIANT["AE"] == "1" else (1640, 880)
-    return ae_shape(W, xs, round_a=True)
 
 
 def oe_shape(W=1820, xs=860, o_bars=True):
@@ -1524,7 +1520,7 @@ def Thorn():
     return drawn("Thorn")
 
 
-for _n, _d in (("AE", "AE"), ("AE.ss01", "AE"), ("OE", "OE"), ("Thorn", "Thorn")):
+for _n, _d in (("AE", "AE"), ("OE", "OE"), ("Thorn", "Thorn")):
     DEPENDS[_n] = [_d]
 
 
@@ -1734,7 +1730,7 @@ def pilcrow_shape(filled, W=940, st=190, gap=110):
     x1 = x2 - gap - st                  # the first stem, the bowl's side
     bowl = rect(0, 250, x1 + st, CH, BIG, None, None, BIG)
     if not filled:
-        bowl = minus(bowl, rect(220, 250 + 150, x1 + 1, CH - OT, CNT, None, None, CNT))
+        bowl = minus(bowl, rect(220, 250 + 140, x1 + 1, CH - OT, CNT, None, None, CNT))
     return union(bowl, rect(x1, 0, x1 + st, CH), rect(x2, 0, W, CH), rect(x1, CH - OT, W, CH))
 
 
@@ -1964,4 +1960,9 @@ for _code, _mark in COMBINING.items():
 CHOSEN = {"acute": "1", "circumflex": "1", "tilde": "2", "macron": "2", "breve": "2", "ring": "2",
           "cedilla": "2", "commaaccent": "2", "ogonek": "2", "slashO": "2", "barD": "1", "barH": "1",
           "slashL": "1"}
+# Review round 2 (2026-10-17), Æ Œ Þ and the signs:
+# "1:2 · 2:2 · 3:1 · 4:1 · 5:1 · 6:1 · 7:1 · 8:2 · 9:1 · 10:2 · 11:2 · 12:2 · 13:1 · 14:1 · 15:1".
+CHOSEN.update({"AE": "2", "OE": "2", "Thorn": "1", "cent": "1", "sterling": "1", "yen": "1", "copyright": "1",
+               "trademark": "2", "section": "1", "paragraph": "2", "brace": "2", "inverted": "2", "bullet": "1",
+               "ordinal": "1", "asciicircum": "1"})
 VARIANT.update(CHOSEN)

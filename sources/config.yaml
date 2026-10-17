@@ -1,0 +1,22 @@
+# gftools builder configuration (https://github.com/googlefonts/gftools).
+# OnTop.ufo is written by build.py from the geometry in glyphs.py; build with
+#   gftools builder sources/config.yaml
+# or python build.py, which writes the UFO first.
+sources:
+  - OnTop.ufo
+familyName: "On Top"
+
+# One static style.
+buildVariable: false
+buildStatic: true
+buildTTF: true
+buildOTF: true
+buildWebfont: true
+
+# The face is approved as it renders unhinted (smooth at every size, gasp 0x000F); gftools
+# fix adds the smart dropout control Google needs for unhinted fonts.
+autohintTTF: false
+autohintOTF: false
+
+# The outlines come out of skia-pathops without overlaps.
+removeOutlineOverlaps: false
