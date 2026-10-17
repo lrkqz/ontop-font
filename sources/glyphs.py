@@ -645,23 +645,38 @@ def slash(m=0.8):
     return s
 
 
+def corner_inset_at(v, corner=None):
+    """How far in from the corner's vertical side the curve of a round corner lies at height v
+    (measured from the corner's horizontal edge)."""
+    rx, ry, k = corner or BIG
+    lo, hi = 0.0, 1.0
+    for _ in range(60):
+        t = (lo + hi) / 2
+        y = 3 * (1 - t) * t * t * (ry - ry * k) + t ** 3 * ry
+        lo, hi = (t, hi) if y < v else (lo, t)
+    t = (lo + hi) / 2
+    return (1 - t) ** 3 * rx + 3 * (1 - t) ** 2 * t * (rx - rx * k)
+
+
 @glyph("ampersand", 0x26)
-def ampersand(top_w=720, bowl_w=800):
+def ampersand(top_w=720):
     # The first & he saw, as he chose it again (2026-10-17: "Nimm das erste, aber ohne den
     # dreieckigen überhang auf der rechten schräge"): the 8's storeys, the upper loop smaller and
     # set in on a round shoulder, the lower bowl open on the right, and a leg at 0.9 of the N's
-    # weight. The leg's right edge runs straight on from the loop's side, so nothing stands out
-    # over the slant; at the baseline a notch parts the bowl's foot from the leg, as at the R.
+    # weight, one band of even width, whose right edge runs straight on from the loop's side.
+    # The bowl's foot rounds with the O's corner and ends exactly on the leg's left edge, in a
+    # point where the counter's floor meets it ("der untere balken sollte von der krümmung her
+    # auf den queren balken mit der spitze enden"); below that point a notch parts foot and leg.
     m = -1.2246
     h = diag_h(m) * 0.9
     W = top_w - m * Y_M1                      # the leg's right edge leaves the loop's side at Y_M1
-    slant_left = poly((-10, -10), (W - m * 10, -10), (W + m * (Y_M1 + 10), Y_M1 + 10), (-10, Y_M1 + 10))
+    leg_left_at = lambda y: W - h + m * y     # noqa: E731
+    bowl_w = leg_left_at(Y_B1) + corner_inset_at(Y_B1)
     upper = minus(rect(80, Y_M0, top_w, CH, MID, MID, None, None),
                   rect(80 + VR, Y_M1, top_w - VR, Y_T0, CNT3, CNT3, CNT3, CNT3))
     lower = minus(rect(0, 0, bowl_w, Y_M1, MID, None, None, MID),
                   rect(VR, Y_B1, bowl_w + 10, Y_M0, CNT3, None, None, CNT3),
                   round_corner(bowl_w, 0, -1, 1))
-    lower = clip(lower, slant_left)
     leg = clip(band(m, W - h, W, 0, Y_M1), rect(0, 0, W, Y_M1))
     return union(upper, lower, leg)
 
@@ -811,16 +826,18 @@ def guillemotright():
 
 
 @glyph("asterisk", ord("*"))
-def asterisk(w=580, h=460, t=172):
-    # An upright bar and two diagonals crossing, raised to the cap height. As he approved it
-    # (2026-10-17: the heavier one "hat es verkackt").
+def asterisk(w=580, h=460, t=110):
+    # An upright bar and two diagonals crossing, raised to the cap height, at the weight of the
+    # Euro's bars (2026-10-17: "viel zu unkenntlich (dick), nimm da die strichstärke von den
+    # € querstrichen"): the diagonals 110 across, the upright 110 stretched as every upright is.
     cy = CH - h / 2
     m = w / h
-    up = rect(w / 2 - t / 2, cy - h / 2, w / 2 + t / 2, cy + h / 2)
-    d = t * math.sqrt(1 + m * m)              # 172 across the stroke, like the upright
+    up_w = t * STRETCH
+    up = rect(w / 2 - up_w / 2, cy - h / 2, w / 2 + up_w / 2, cy + h / 2)
+    d = t * math.sqrt(1 + m * m)              # 110 across the stroke
     a1 = line_through(w / 2, cy, m)
     a2 = line_through(w / 2, cy, -m)
-    box = rect(0, cy - h / 2 + 40, w, cy + h / 2 - 40)
+    box = rect(0, cy - h / 2, w, cy + h / 2)
     return union(up, clip(band(m, a1 - d / 2, a1 + d / 2, cy - h, cy + h), box),
                  clip(band(-m, a2 - d / 2, a2 + d / 2, cy - h, cy + h), box))
 
@@ -853,11 +870,13 @@ def degree():
 
 
 @glyph("multiply", 0xD7)
-def multiply(w=520, h=440):
-    # Two diagonals crossing in the middle of the box, from corner to corner.
+def multiply(w=520, h=440, t=110):
+    # Two diagonals crossing in the middle of the box, from corner to corner, at the asterisk's
+    # weight (2026-10-17: "das kleine sternchen (2 balken) ... auch auf die strichstärke vom
+    # größeren sternchen bringen"): 110 across the stroke.
     cy = CH / 2
-    m = solve_slope(lambda m: m * h + diag_h(m) * 0.75 - w, 0.05, 4)
-    hh = diag_h(m) * 0.75
+    m = solve_slope(lambda m: m * h + t * math.sqrt(1 + m * m) - w, 0.05, 4)
+    hh = t * math.sqrt(1 + m * m)
     a = line_through(w / 2, cy, -m)
     s = band(-m, a - hh / 2, a + hh / 2, cy - h, cy + h)
     return clip(union(s, mirror_x(s, w / 2)), rect(0, cy - h / 2, w, cy + h / 2))

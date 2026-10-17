@@ -67,8 +67,7 @@ an ellipse). The fits were made on the image's own edge points.
 | Period | 264 × 196: a square before the stretch |
 | Signs: horizontal strokes (= # _ and the hyphen's 188) | the three-storey bar, 172 |
 | Signs: vertical strokes (# $) | 230, the 172 bar stretched 1.32 times |
-| × | diagonals 0.75 of a diagonal's weight at their angle, as the arrows |
-| * | upright 172, diagonals 172 across, as he approved it |
+| * and × | strokes 110 across, the Euro's bars ("nimm da die strichstärke von den € querstrichen"); the *'s upright 145, the 110 stretched 1.32 times |
 | Arrows (< > « » ‹ ›) | the K's arm and leg: the N's angle at 0.75 of its weight |
 | Euro | the C with two bars of 110 through its back, starting where its outer corners end (so no neck), 180 out to the left and 200 into the counter |
 | ! and ? | 90 clear above the period |
@@ -102,16 +101,22 @@ the round A, C and D. He ordered:
 - **&:** the first & he saw, chosen again ("Nimm das erste, aber ohne den dreieckigen überhang auf
   der rechten schräge"): the 8's storeys, the upper loop smaller and set in on a round shoulder,
   the lower bowl open on the right, a leg at 0.9 of the N's weight whose right edge runs straight
-  on from the loop's side; a notch parts the bowl's foot from the leg, as at the R.
+  on from the loop's side. The leg is one band of even width; the bowl's foot rounds with the O's
+  corner and ends exactly on the leg's left edge, in a point where the counter's floor meets it
+  ("der untere balken sollte von der krümmung her auf den queren balken mit der spitze enden");
+  below that point a notch parts foot and leg.
 - **Approved (2026-10-17):** A to Z, Ä Ö Ü ẞ, the figures and every sign: "NICHTS mehr ändern,
   alles abgenommen", after the & above and the * put back as it was ("dicker hat es verkackt").
+  After that, on his word: the &'s foot ending on the leg, the * and then the × at the Euro's bar
+  weight ("zu unkenntlich (dick)"; "das kleine sternchen (2 balken) ... auch"). The & and the *
+  approved: "& Zeichen ist jetzt perfekt, sternchen auch".
 - **8:** the B's waist on both sides.
 - **One curve for every rounding** ("schau dir S und O an ... nicht einmal consistent von der
   curving der buchstabenrundung her"): every round corner of every glyph is the O's corner; the
   half-height bowls had a tighter one before.
 - **Signs to match the letters:** the arrows are the K's arm and leg at the N's angle; the Euro's
-  bars are light ("einfach kleinere striche") and run through the C's back; = # * _ × carry the
-  three-storey bar; 7 and ẞ have no overhang.
+  bars are light ("einfach kleinere striche") and run through the C's back; * and × take the
+  Euro's bar weight; = # _ carry the three-storey bar; 7 and ẞ have no overhang.
 - **S:** round ends; the square ends are `ss03`. **R:** the short leg; the long leg is `ss02`.
 
 ## Spacing and kerning (`sources/spacing.py`)
