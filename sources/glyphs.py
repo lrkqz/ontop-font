@@ -18,7 +18,8 @@ Units: 1000 to the em, cap height 700, baseline 0. Each builder returns a pathop
 ink starting at x = 0 (spacing is added in spacing.py).
 """
 import math
-from geometry import rect, poly, band, union, minus, clip, mirror_x, mirror_y, rotate180, translate, line_through, scale
+from geometry import (rect, poly, band, union, minus, clip, mirror_x, mirror_y, rotate180, rotate90, translate,
+                      line_through, scale)
 
 CH = 700
 
@@ -1158,7 +1159,7 @@ def cedilla_bowl(W=300, depth=-DESC, neck=50, neck_w=130, side=130, bar=72):
     h = depth - neck
     s = h / CH
     c = (234 * s * 2, 177 * s * 2 * 0.5, 0.605)
-    ci = (max(10, c[0] - side), max(10, c[1] - bar), 0.55)
+    ci = (36, 28, 0.55)                      # its two curves meet in the 56 counter
     x0 = -W / 2 + 20
     bowl = minus(rect(x0, -depth, x0 + W, -neck, None, c, c, None),
                  rect(x0 - 10, -depth + bar, x0 + W - side, -neck - bar, None, ci, ci, None))
@@ -1427,3 +1428,540 @@ for _n, _d, _b in (("Dcroat", "barD", "D"), ("Eth", "barD", "D"), ("Hbar", "barH
                    ("Oslash", "slashO", "O")):
     COMPOSITE[_n] = (_b, [])
     DEPENDS[_n] = [_d]
+
+
+
+# =============================================================================================
+# Æ Œ Þ (GF Latin Core)
+# =============================================================================================
+# Æ and Œ carry the E's three storeys (bars 172, counters 92); the A's and O's part keep their
+# own construction. Þ is the P's bowl on a stem that runs through.
+
+DESIGN_NAMES["AE"] = "Æ"
+DESIGN_NAMES["OE"] = "Œ"
+DESIGN_NAMES["Thorn"] = "Þ"
+A_SLOPE = 540 / 700                    # the pointed A's legs: (1420 - 340) / 2 across the cap height
+
+
+def ae_shape(W=1760, xs=900, round_a=False):
+    """The A's left leg (or the round A's side), the E's stem at xs and its three bars to W."""
+    # on the round side the bars start where the O's corner ends, so it stays the O's
+    x_top, x_mid = (BIG[0], V / 2) if round_a else (0, 0)
+    bars = union(rect(x_top, Y_T0, W, CH), rect(x_mid, Y_M0, W, Y_M1), rect(xs, 0, W, Y_B1), rect(xs, 0, xs + V, CH))
+    if round_a:
+        out = union(minus(rect(0, 0, xs + 1, CH, BIG, None, None, None), rect(V, -10, xs + 2, Y_M0, None, None, None, None),
+                          rect(V, Y_M1, xs + 2, Y_T0, CNT3, None, None, None)), bars)
+        return out
+    h = diag_h(A_SLOPE)
+    leg = band(A_SLOPE, 0, h, 0, CH)
+    left = clip(bars, poly((0, 0), (W + 10, 0), (W + 10, CH), (A_SLOPE * CH, CH)))
+    return union(leg, left)
+
+
+@variant("AE", "1", "E-Teil breit")
+def AE_wide():
+    return ae_shape()
+
+
+@variant("AE", "2", "E-Teil schmaler")
+def AE_narrow():
+    return ae_shape(1640, 880)
+
+
+@glyph("AE", 0xC6)
+def AE():
+    return drawn("AE")
+
+
+@alt("AE.ss01", "AE", "ss01", "A rund")
+def AE_round():
+    W, xs = (1760, 900) if VARIANT["AE"] == "1" else (1640, 880)
+    return ae_shape(W, xs, round_a=True)
+
+
+def oe_shape(W=1820, xs=860, o_bars=True):
+    """The O's left half and its counter, closed by the E's stem at xs; the E's storeys after."""
+    out = rect(0, 0, W, CH, BIG, None, None, BIG)
+    if o_bars:
+        counter = rect(256, OB, xs, CH - OT, CNT, None, None, CNT)
+    else:
+        counter = rect(256, Y_B1, xs, Y_T0, CNT, None, None, CNT)
+    return minus(out, counter, rect(xs + V, Y_M1, W + 10, Y_T0), rect(xs + V, Y_B1, W + 10, Y_M0))
+
+
+@variant("OE", "1", "O-Teil mit den Balken des O")
+def OE_obars():
+    return oe_shape()
+
+
+@variant("OE", "2", "dreistöckig durchgehend")
+def OE_three():
+    return oe_shape(o_bars=False)
+
+
+@glyph("OE", 0x152)
+def OE():
+    return drawn("OE")
+
+
+def thorn_shape(dy=79, W=1206):
+    return minus(union(rect(0, 0, 260, CH), translate(rect(0, 157, W, CH, None, BOWL, BOWL, None), 0, -dy)),
+                 translate(p_counter(W), 0, -dy))
+
+
+@variant("Thorn", "1", "Bauch des P, mittig")
+def thorn_mid():
+    return thorn_shape()
+
+
+@variant("Thorn", "2", "Bauch des P, tiefer")
+def thorn_low():
+    return thorn_shape(120)
+
+
+@glyph("Thorn", 0xDE)
+def Thorn():
+    return drawn("Thorn")
+
+
+for _n, _d in (("AE", "AE"), ("AE.ss01", "AE"), ("OE", "OE"), ("Thorn", "Thorn")):
+    DEPENDS[_n] = [_d]
+
+
+# =============================================================================================
+# Signs (GF Latin Core)
+# =============================================================================================
+
+DESIGN_NAMES["cent"] = "¢"
+DESIGN_NAMES["sterling"] = "£"
+DESIGN_NAMES["yen"] = "¥"
+DESIGN_NAMES["copyright"] = "© und ®"
+DESIGN_NAMES["trademark"] = "™"
+DESIGN_NAMES["section"] = "§"
+DESIGN_NAMES["paragraph"] = "¶"
+DESIGN_NAMES["brace"] = "{ }"
+DESIGN_NAMES["inverted"] = "¡ ¿"
+DESIGN_NAMES["bullet"] = "•"
+DESIGN_NAMES["ordinal"] = "ª º"
+DESIGN_NAMES["asciicircum"] = "^"
+SIGN_T = 230                           # the $'s and #'s upright
+
+
+def cent_shape(through, W=1060):
+    c = C(W)
+    cx = W / 2
+    if through:
+        return union(c, rect(cx - SIGN_T / 2, -120, cx + SIGN_T / 2, CH + 120))
+    return union(c, rect(cx - SIGN_T / 2, -120, cx + SIGN_T / 2, 1), rect(cx - SIGN_T / 2, CH - 1, cx + SIGN_T / 2, CH + 120))
+
+
+@variant("cent", "1", "Strich oben und unten, wie beim $")
+def cent_outside():
+    return cent_shape(False)
+
+
+@variant("cent", "2", "Strich durch das C")
+def cent_through():
+    return cent_shape(True)
+
+
+@glyph("cent", 0xA2)
+def cent():
+    return drawn("cent")
+
+
+def sterling_shape(bar, W=1100, xs=240):
+    # The F's top (its round corner and top bar, shorter), a stem, the L's foot, a crossbar.
+    top = minus(rect(xs, OB, W - 120, CH, BIG, None, None, None), rect(xs + V, OB - 10, W, CH - OT, CNT, None, None, None))
+    foot = rect(60, 0, W, OB)
+    cross = rect(60, 330 - bar / 2, xs + V + 220, 330 + bar / 2)
+    return union(top, foot, cross)
+
+
+@variant("sterling", "1", "leichter Querbalken wie beim €")
+def sterling_light():
+    return sterling_shape(110)
+
+
+@variant("sterling", "2", "Querbalken 172")
+def sterling_bar():
+    return sterling_shape(H3)
+
+
+@glyph("sterling", 0xA3)
+def sterling():
+    return drawn("sterling")
+
+
+def yen_shape(bars, W=1340):
+    y = Y()
+    half = 330
+    if bars == 2:
+        b = union(rect(W / 2 - half, 120, W / 2 + half, 230), rect(W / 2 - half, 290, W / 2 + half, 400))
+    else:
+        b = rect(W / 2 - half, 190, W / 2 + half, 190 + H3)
+    return union(y, b)
+
+
+@variant("yen", "1", "zwei leichte Balken wie beim €")
+def yen_two():
+    return yen_shape(2)
+
+
+@variant("yen", "2", "ein Balken 172")
+def yen_one():
+    return yen_shape(1)
+
+
+@glyph("yen", 0xA5)
+def yen():
+    return drawn("yen")
+
+
+def light_ring(W, y0, y1, side=160, bar=120):
+    """The @'s ring: a lighter O."""
+    return minus(rect(0, y0, W, y1, BIG, BIG, BIG, BIG), rect(side, y0 + bar, W - side, y1 - bar, CNT, CNT, CNT, CNT))
+
+
+SMALL_BOWL = (120, 92, 0.62)           # the corner of the a inside the @
+
+
+def small_c(x0, y0, w, h, side=170, bar=115):
+    inner = (SMALL_C[0], SMALL_C[1], SMALL_C[2])
+    ring = minus(rect(x0, y0, x0 + w, y0 + h, SMALL_BOWL, SMALL_BOWL, SMALL_BOWL, SMALL_BOWL),
+                 rect(x0 + side, y0 + bar, x0 + w - side, y0 + h - bar, inner, inner, inner, inner))
+    return minus(ring, rect(x0 + w - side - 1, y0 + bar + 40, x0 + w + 10, y0 + h - bar - 40))
+
+
+def small_r(x0, y0, w, h, side=170, bar=80):
+    bowl_y = y0 + h * 0.42
+    inner = (SMALL_C[0], SMALL_C[1], SMALL_C[2])
+    c = (SMALL_BOWL[0], 75, SMALL_BOWL[2])         # the bowl is half as tall as the C: its corner lower
+    bowl = minus(rect(x0, bowl_y, x0 + w, y0 + h, None, c, c, None),
+                 rect(x0 + side, bowl_y + bar, x0 + w - side, y0 + h - bar, None, inner, inner, None))
+    m = -1.2246
+    t = diag_h(m) * 0.42
+    leg = clip(band(m, x0 + w - t - m * y0, x0 + w - m * y0, y0, bowl_y + 1), rect(x0, y0, x0 + w, bowl_y + 1))
+    return union(rect(x0, y0, x0 + side, y0 + h), bowl, leg)
+
+
+def circled(inner, big):
+    if big:
+        W, y0, y1 = 1420, -150, CH
+    else:
+        W, y0, y1 = 1333, 0, CH
+    ring = light_ring(W, y0, y1)
+    iw, ih = 560, (y1 - y0) * 0.55
+    return union(ring, inner(W / 2 - iw / 2 + 10, (y0 + y1) / 2 - ih / 2, iw, ih))
+
+
+@variant("copyright", "1", "Ring wie beim @, auf Versalhöhe")
+def copyright_cap():
+    return circled(small_c, False)
+
+
+@variant("copyright", "2", "Ring so groß wie das @")
+def copyright_big():
+    return circled(small_c, True)
+
+
+@glyph("copyright", 0xA9)
+def copyright():
+    return drawn("copyright")
+
+
+@glyph("registered", 0xAE)
+def registered():
+    return circled(small_r, VARIANT["copyright"] == "2")
+
+
+def trademark_shape(s, gap=70):
+    # The face's own T and M, small, their tops on the cap height.
+    t = scale(T(), s)
+    m = scale(M(), s)
+    tw = t.bounds[2]
+    return translate(union(t, translate(m, tw + gap)), 0, CH - CH * s)
+
+
+@variant("trademark", "1", "T und M der Schrift, klein (330 hoch)")
+def trademark_47():
+    return trademark_shape(330 / CH)
+
+
+@variant("trademark", "2", "noch kleiner (280 hoch)")
+def trademark_40():
+    return trademark_shape(280 / CH)
+
+
+@glyph("trademark", 0x2122)
+def trademark():
+    return drawn("trademark")
+
+
+def section_shape(round_ends, W=900, b=150, c=107, s=200, y0=-110):
+    """Two S's run into one: four bars; the left side joins the upper three, the right the lower
+    three, so the middle counter is closed. Its corners the O's, its counters the S's."""
+    ys = [y0]
+    for step in (b, c, b, c, b, c, b):
+        ys.append(ys[-1] + step)
+    y1, y2, y3, y4, y5, y6, y7 = ys[1:]
+    k = CNT3
+    out = poly((0, y0), (W, y0, BIG), (W, y5, BIG), (s, y5, k), (s, y6, k), (W, y6), (W, y7),
+               (0, y7, BIG), (0, y2, BIG), (W - s, y2, k), (W - s, y1, k), (0, y1))
+    out = minus(out, rect(s, y3, W - s, y4, k, k, k, k))
+    if round_ends:
+        out = minus(out, round_corner(W, y7, -1, -1), round_corner(0, y0, 1, 1))
+    return out
+
+
+@variant("section", "1", "runde Enden wie beim S")
+def section_round():
+    return section_shape(True)
+
+
+@variant("section", "2", "gerade Enden")
+def section_square():
+    return section_shape(False)
+
+
+@glyph("section", 0xA7)
+def section():
+    return drawn("section")
+
+
+def pilcrow_shape(filled, W=940, st=190, gap=110):
+    x2 = W - st                         # the second stem
+    x1 = x2 - gap - st                  # the first stem, the bowl's side
+    bowl = rect(0, 250, x1 + st, CH, BIG, None, None, BIG)
+    if not filled:
+        bowl = minus(bowl, rect(220, 250 + 150, x1 + 1, CH - OT, CNT, None, None, CNT))
+    return union(bowl, rect(x1, 0, x1 + st, CH), rect(x2, 0, W, CH), rect(x1, CH - OT, W, CH))
+
+
+@variant("paragraph", "1", "Bauch gefüllt")
+def pilcrow_filled():
+    return pilcrow_shape(True)
+
+
+@variant("paragraph", "2", "Bauch offen")
+def pilcrow_open():
+    return pilcrow_shape(False)
+
+
+@glyph("paragraph", 0xB6)
+def paragraph():
+    return drawn("paragraph")
+
+
+def brace_shape(round_, W=440, y0=-80, y1=780, x=110, t=200, arm=165, tab=150):
+    """The bracket's arms on a stem set in, and a tab pointing out at the middle."""
+    cy = (y0 + y1) / 2
+    c = PAREN if round_ else None
+    ci = PAREN_IN if round_ else None
+    upper = minus(rect(x, cy, W, y1, c, None, None, None), rect(x + t, cy - 10, W + 10, y1 - arm, ci, None, None, None))
+    lower = minus(rect(x, y0, W, cy, None, None, None, c), rect(x + t, y0 + arm, W + 10, cy + 10, None, None, None, ci))
+    return union(upper, lower, rect(0, cy - tab / 2, x + t, cy + tab / 2))
+
+
+@variant("brace", "1", "eckig wie die [ ]")
+def brace_square():
+    return brace_shape(False)
+
+
+@variant("brace", "2", "rund wie die ( )")
+def brace_round():
+    return brace_shape(True)
+
+
+@glyph("braceleft", ord("{"))
+def braceleft():
+    return drawn("brace")
+
+
+@glyph("braceright", ord("}"))
+def braceright():
+    b = drawn("brace")
+    return mirror_x(b, 220)
+
+
+@variant("inverted", "1", "gedreht, auf der Grundlinie")
+def inverted_base():
+    return None
+
+
+@variant("inverted", "2", "gedreht, unter die Grundlinie gesenkt")
+def inverted_low():
+    return None
+
+
+def inverted(sign):
+    p = sign()
+    b = p.bounds
+    r = rotate180(p, (b[0] + b[2]) / 2, CH / 2)
+    return translate(r, 0, -250) if VARIANT["inverted"] == "2" else r
+
+
+@glyph("exclamdown", 0xA1)
+def exclamdown():
+    return inverted(exclam)
+
+
+@glyph("questiondown", 0xBF)
+def questiondown():
+    return inverted(question)
+
+
+@variant("bullet", "1", "eckig, größer als der Punkt")
+def bullet_square():
+    return rect(0, 350 - 140, 370, 350 + 140)
+
+
+@variant("bullet", "2", "rund")
+def bullet_round():
+    c = (150, 114, 0.605)
+    return rect(0, 350 - 140, 370, 350 + 140, c, c, c, c)
+
+
+@glyph("bullet", 0x2022)
+def bullet():
+    return drawn("bullet")
+
+
+def small_a_shape(W=560, H=290, f=150, h=130, bar=(45, 105)):
+    """The pointed A, small: its legs h across, its crossbar low."""
+    a = (W - f) / 2
+    m = a / H
+    outer = poly((0, 0), (W, 0), (W - a, H), (a, H))
+    y_apex = (W - 2 * h) / (2 * m)
+    inner = minus(poly((h, 0), (W - h, 0), (W / 2, y_apex)), rect(-10, bar[0], W + 10, bar[1]))
+    return minus(outer, inner)
+
+
+def ordinal(letter, underline, W):
+    y = CH - 290
+    p = translate(letter(), 0, y)
+    if underline:
+        p = union(p, rect(0, y - 100 - 90, W, y - 100))
+    return p
+
+
+@variant("ordinal", "1", "mit Strich darunter")
+def ordinal_bar():
+    return None
+
+
+@variant("ordinal", "2", "ohne Strich")
+def ordinal_plain():
+    return None
+
+
+@glyph("ordfeminine", 0xAA)
+def ordfeminine():
+    return ordinal(small_a_shape, VARIANT["ordinal"] == "1", 560)
+
+
+@glyph("ordmasculine", 0xBA)
+def ordmasculine():
+    return ordinal(lambda: small_o(0, 0), VARIANT["ordinal"] == "1", 400)
+
+
+@glyph("divide", 0xF7)
+def divide(W=800):
+    # The minus with a dieresis dot above and below, as far from it as the dots stand from the caps.
+    bar = rect(0, 350 - HM / 2, W, 350 + HM / 2)
+    gap = DOT_GAP * 0.7
+    d = lambda y: rect(W / 2 - DOT_W / 2, y, W / 2 + DOT_W / 2, y + DOT_H)  # noqa: E731
+    return union(bar, d(350 + HM / 2 + gap), d(350 - HM / 2 - gap - DOT_H))
+
+
+@glyph("minus", 0x2212)
+def minus_sign(W=800):
+    # The plus's bar.
+    return rect(0, 350 - HM / 2, W, 350 + HM / 2)
+
+
+@glyph("backslash", ord("\\"))
+def backslash():
+    s = slash()
+    return mirror_x(s, mid_x(s))
+
+
+@variant("asciicircum", "1", "der Zirkumflex, groß")
+def asciicircum_roof():
+    return roof(720, 330, 160, 0, CH - 330)
+
+
+@variant("asciicircum", "2", "der Pfeil < gedreht")
+def asciicircum_arrow():
+    c = rotate90(chevron(LT_HALF), 0, 0)
+    c = rotate90(rotate90(c, 0, 0), 0, 0)            # pointing up
+    b = c.bounds
+    return translate(c, -b[0], CH - b[3])
+
+
+@glyph("asciicircum", ord("^"))
+def asciicircum():
+    return drawn("asciicircum")
+
+
+@glyph("asciitilde", ord("~"))
+def asciitilde():
+    # The tilde as chosen, larger, in the middle of the caps.
+    t = scale(tilde_mark(), 1.45)
+    b = t.bounds
+    return translate(t, -b[0], 350 - (b[1] + b[3]) / 2)
+
+
+for _n, _d in (("cent", "cent"), ("sterling", "sterling"), ("yen", "yen"), ("copyright", "copyright"),
+               ("registered", "copyright"), ("trademark", "trademark"), ("section", "section"),
+               ("paragraph", "paragraph"), ("braceleft", "brace"), ("braceright", "brace"),
+               ("exclamdown", "inverted"), ("questiondown", "inverted"), ("bullet", "bullet"),
+               ("ordfeminine", "ordinal"), ("ordmasculine", "ordinal"), ("asciicircum", "asciicircum")):
+    DEPENDS[_n] = [_d]
+
+
+# =============================================================================================
+# The accents on their own
+# =============================================================================================
+# Spacing accents stand where they stand over the caps; combining marks have no width and stand
+# over the letter before them (centred on COMBINING_X when nothing positions them; the mark
+# feature in build.py places them on each letter's anchor).
+
+SPACING_ACCENTS = {"grave": 0x60, "dieresis": 0xA8, "macron": 0xAF, "acute": 0xB4, "cedilla": 0xB8,
+                   "circumflex": 0x2C6, "caron": 0x2C7, "breve": 0x2D8, "dotaccent": 0x2D9, "ring": 0x2DA,
+                   "ogonek": 0x2DB, "tilde": 0x2DC, "hungarumlaut": 0x2DD}
+COMBINING_X = -660
+COMBINING_MARKS = {}                   # glyph name -> mark
+
+
+def _spacing(mark):
+    return lambda: MARKS[mark]()
+
+
+def _combining(mark):
+    def draw():
+        m = MARKS[mark]()
+        if mark == "ogonek":
+            return translate(m, COMBINING_X)
+        return centred(m, COMBINING_X)
+    return draw
+
+
+for _mark, _code in SPACING_ACCENTS.items():
+    glyph(_mark, _code)(_spacing(_mark))
+    DEPENDS[_mark] = [MARK_DESIGN[_mark]] if _mark in MARK_DESIGN else []
+for _code, _mark in COMBINING.items():
+    _name = _mark + "comb"
+    glyph(_name, _code)(_combining(_mark))
+    COMBINING_MARKS[_name] = _mark
+
+
+# =============================================================================================
+# His choices
+# =============================================================================================
+# Review round 1 (2026-10-17), accents and strokes, as @lrkqz picked them from the variants:
+# "1:1 · 2:1 · 3:2 · 4:2 · 5:2 · 6:2 · 7:2 · 8:2 · 9:2 · 10:2 · 11:1 · 12:1 · 13:1".
+CHOSEN = {"acute": "1", "circumflex": "1", "tilde": "2", "macron": "2", "breve": "2", "ring": "2",
+          "cedilla": "2", "commaaccent": "2", "ogonek": "2", "slashO": "2", "barD": "1", "barH": "1",
+          "slashL": "1"}
+VARIANT.update(CHOSEN)

@@ -161,6 +161,22 @@ def rotate180(path, cx, cy):
     return mirror_y(mirror_x(path, cx), cy)
 
 
+def rotate90(path, cx, cy):
+    """Turn a quarter counter-clockwise about (cx, cy)."""
+    out = pathops.Path()
+    for verb, pts in path:
+        moved = [(cx - (y - cy), cy + (x - cx)) for x, y in pts]
+        if verb == pathops.PathVerb.MOVE:
+            out.moveTo(*moved[0])
+        elif verb == pathops.PathVerb.LINE:
+            out.lineTo(*moved[0])
+        elif verb == pathops.PathVerb.CUBIC:
+            out.cubicTo(*moved[0], *moved[1], *moved[2])
+        elif verb == pathops.PathVerb.CLOSE:
+            out.close()
+    return pathops.op(out, out, pathops.PathOp.UNION)
+
+
 def scale(path, sx, sy=None, cx=0, cy=0):
     """Scale about (cx, cy); sy defaults to sx."""
     sy = sx if sy is None else sy

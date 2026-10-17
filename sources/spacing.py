@@ -32,8 +32,9 @@ ZONE = (0, 700)
 MIN_DIST, MIN_DIST_PUNCT = 70, 100
 
 LOW = {"period", "comma", "quotesinglbase", "quotedblbase", "ellipsis"}
-MIDDLE = {"hyphen", "endash", "emdash", "periodcentered"}
-HIGH = {"quoteright", "quoteleft", "quotedblright", "quotedblleft", "quotesingle", "quotedbl", "degree"}
+MIDDLE = {"hyphen", "endash", "emdash", "periodcentered", "bullet"}
+HIGH = {"quoteright", "quoteleft", "quotedblright", "quotedblleft", "quotesingle", "quotedbl", "degree",
+        "ordfeminine", "ordmasculine", "trademark"}
 DOTS = {"colon", "semicolon"}
 PUNCT_CAP = [(LOW, -130), (MIDDLE, -60), (HIGH, -250), (DOTS, -60)]
 PUNCT = LOW | MIDDLE | HIGH | DOTS

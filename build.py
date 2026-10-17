@@ -53,7 +53,7 @@ BASE_OF = {n: GL.base_of(n) for n in names if GL.base_of(n)}
 CV = {}                        # cv tag -> (design, {glyph: [alternate per variant]})
 if REVIEW:
     for design, variants in GL.VARIANTS.items():
-        if len(variants) < 2:
+        if len(variants) < 2 or design in GL.CHOSEN:
             continue
         tag = f"cv{len(CV) + 1:02d}"
         chosen = GL.VARIANT[design]
@@ -67,7 +67,8 @@ if REVIEW:
                 alt = f"{n}.{design}{key}"
                 paths[alt] = simplified(GL.G[n]())
                 names.append(alt)
-                BASE_OF[alt] = BASE_OF[n]
+                if n in BASE_OF:
+                    BASE_OF[alt] = BASE_OF[n]
                 subs[n].append(alt)
             GL.VARIANT[design] = chosen
         CV[tag] = (design, subs)
@@ -88,6 +89,12 @@ FIXED = {
     "asterisk": (50, 50), "underscore": (0, 0), "equal": (60, 60), "bar": (80, 80), "degree": (50, 50),
     "multiply": (60, 60),
     ".notdef": (60, 60),
+    # GF Latin Core: the signs take the spacing of the signs they are drawn from
+    "braceleft": (70, 40), "braceright": (40, 70), "exclamdown": (72, 72), "questiondown": (60, 40),
+    "bullet": (60, 60), "ordfeminine": (50, 50), "ordmasculine": (50, 50), "divide": (60, 60), "minus": (60, 60),
+    "backslash": (20, 20), "asciicircum": (60, 60), "asciitilde": (60, 60), "copyright": (60, 60),
+    "registered": (60, 60), "trademark": (50, 50), "section": (60, 60), "paragraph": (60, 60),
+    **{n: (60, 60) for n in GL.SPACING_ACCENTS},
 }
 SPACE_W = 545            # the image's word space: N's 72 + 545 + T's 25 = the 642 measured
 ONE_LEFT = 120           # the 1 is narrow; it needs room on the side of its flag
@@ -101,6 +108,10 @@ for n in names:
         continue
     contours[n] = flatten(p)
     if n in BASE_OF:
+        continue
+    if n in GL.COMBINING_MARKS:
+        # no width: the mark stands over the letter before it
+        metrics[n] = (0, int(round(p.bounds[0]))); shift[n] = 0
         continue
     xmin, ymin, xmax, ymax = p.bounds
     cs = contours[n]
@@ -126,7 +137,8 @@ from shapely.geometry import Polygon  # noqa: E402
 from shapely.ops import unary_union  # noqa: E402
 from shapely import affinity  # noqa: E402
 
-KERNABLE = [n for n in names if n not in (".notdef", "space")]
+KERNABLE = [n for n in names if n not in (".notdef", "space") and n not in GL.COMBINING_MARKS
+            and n not in GL.SPACING_ACCENTS]
 FIGURES = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 prof, shapes = {}, {}
 for n in KERNABLE:
@@ -208,6 +220,39 @@ for tag, (design, subs) in CV.items():
     for n, alts in subs.items():
         fea.append(f"  sub {n} from [{' '.join(alts)}];")
     fea.append(f"}} {tag};")
+# Marks: every letter has an anchor over its middle (TOP_X where it differs), under the middle of
+# its foot, and where the ogonek stands; the combining marks attach there.
+LETTERS_FOR_MARKS = [n for n in names if paths.get(n) is not None and n not in BASE_OF
+                     and (len(n.split(".")[0]) == 1 and n[0].isalpha() or n.split(".")[0] in ("AE", "OE", "Thorn", "uni1E9E"))]
+
+
+def anchors_of(n):
+    base = n.split(".")[0]
+    b = paths[n].bounds
+    mid = (b[0] + b[2]) / 2
+    top = GL.TOP_X.get(base, mid)
+    og = GL.OGONEK_X.get(base, b[2] - 150)
+    return {"top": (top + shift[n], GL.CH), "bottom": (mid + shift[n], 0), "ogonek": (og + shift[n], 0)}
+
+
+MARK_ANCHOR = {"cedilla": "bottom", "commaaccent": "bottom", "ogonek": "ogonek"}
+fea.append("table GDEF {")
+fea.append("  GlyphClassDef [{}], , [{}], ;".format(
+    " ".join(n for n in names if n not in GL.COMBINING_MARKS and paths.get(n) is not None),
+    " ".join(GL.COMBINING_MARKS)))
+fea.append("} GDEF;")
+for n, mark in GL.COMBINING_MARKS.items():
+    kind = MARK_ANCHOR.get(mark, "top")
+    y = 0 if kind != "top" else GL.CH
+    fea.append(f"markClass {n} <anchor {GL.COMBINING_X} {y}> @MC_{kind};")
+fea.append("feature mark {")
+for kind in ("top", "bottom", "ogonek"):
+    fea.append(f"  lookup mark_{kind} {{")
+    for n in LETTERS_FOR_MARKS:
+        x, y = anchors_of(n)[kind]
+        fea.append(f"    pos base {n} <anchor {int(round(x))} {int(round(y))}> mark @MC_{kind};")
+    fea.append(f"  }} mark_{kind};")
+fea.append("} mark;")
 fea.append("feature kern {")
 for (a, b), k in sorted(kerns.items()):
     fea.append(f"  pos {a} {b} {k};")

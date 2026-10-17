@@ -14,6 +14,12 @@ ACUTE_BY_DESIGN = {"A", "A.ss01", "Adieresis", "Adieresis.ss01", "N", "M", "V", 
                    "guilsinglright", "guillemotleft", "guillemotright", "multiply", "asterisk", "comma", "semicolon",
                    "quoteright", "quoteleft", "quotesinglbase", "quotedblright", "quotedblleft", "quotedblbase"}
 
+# A letter with a mark or a stroke inherits its base's acute corners.
+import os  # noqa: E402
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "sources"))
+import glyphs as GL  # noqa: E402
+ACUTE_BY_DESIGN |= {n for n, (base, _) in GL.COMPOSITE.items() if base in ACUTE_BY_DESIGN}
+
 font = TTFont(sys.argv[1])
 gs = font.getGlyphSet()
 problems = 0
