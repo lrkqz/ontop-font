@@ -306,6 +306,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -781,6 +783,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -1090,6 +1094,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -1399,6 +1405,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -1708,6 +1716,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -2104,6 +2114,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -2413,6 +2425,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -2748,6 +2762,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -3057,6 +3073,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -3366,6 +3384,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -6317,6 +6337,8 @@
       <integer>65</integer>
       <key>uni1E9E</key>
       <integer>20</integer>
+      <key>uni20B9</key>
+      <integer>40</integer>
       <key>yen</key>
       <integer>30</integer>
       <key>zero</key>
@@ -7532,6 +7554,8 @@
       <integer>-250</integer>
       <key>uni021A</key>
       <integer>-285</integer>
+      <key>uni20B9</key>
+      <integer>-45</integer>
       <key>yen</key>
       <integer>-275</integer>
     </dict>
@@ -7631,6 +7655,8 @@
       <integer>-250</integer>
       <key>uni021A</key>
       <integer>-285</integer>
+      <key>uni20B9</key>
+      <integer>-45</integer>
       <key>yen</key>
       <integer>-275</integer>
     </dict>
@@ -7730,6 +7756,8 @@
       <integer>-250</integer>
       <key>uni021A</key>
       <integer>-285</integer>
+      <key>uni20B9</key>
+      <integer>-45</integer>
       <key>yen</key>
       <integer>-275</integer>
     </dict>
@@ -7829,6 +7857,8 @@
       <integer>-250</integer>
       <key>uni021A</key>
       <integer>-285</integer>
+      <key>uni20B9</key>
+      <integer>-45</integer>
       <key>yen</key>
       <integer>-275</integer>
     </dict>
@@ -9521,6 +9551,8 @@
       <integer>-105</integer>
       <key>uni1E9E</key>
       <integer>-45</integer>
+      <key>uni20B9</key>
+      <integer>-35</integer>
       <key>yen</key>
       <integer>-135</integer>
       <key>zero</key>
@@ -15681,6 +15713,8 @@
       <integer>-270</integer>
       <key>uni1E9E</key>
       <integer>-40</integer>
+      <key>uni20B9</key>
+      <integer>-150</integer>
       <key>yen</key>
       <integer>-285</integer>
       <key>zero</key>
@@ -16024,6 +16058,8 @@
       <integer>-90</integer>
       <key>uni1E9E</key>
       <integer>-30</integer>
+      <key>uni20B9</key>
+      <integer>-40</integer>
       <key>yen</key>
       <integer>-170</integer>
       <key>zero</key>
@@ -16698,6 +16734,8 @@
       <integer>-220</integer>
       <key>uni1E9E</key>
       <integer>-20</integer>
+      <key>uni20B9</key>
+      <integer>-100</integer>
       <key>yen</key>
       <integer>-240</integer>
       <key>zero</key>
@@ -16986,6 +17024,8 @@
       <integer>-35</integer>
       <key>uni0218</key>
       <integer>-25</integer>
+      <key>uni20B9</key>
+      <integer>-20</integer>
       <key>zero</key>
       <integer>-35</integer>
     </dict>
@@ -17364,6 +17404,8 @@
       <integer>-55</integer>
       <key>uni0218</key>
       <integer>-45</integer>
+      <key>uni20B9</key>
+      <integer>-20</integer>
       <key>zero</key>
       <integer>-55</integer>
     </dict>
@@ -17606,6 +17648,8 @@
       <integer>25</integer>
       <key>uni0218</key>
       <integer>25</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
       <key>yen</key>
       <integer>-60</integer>
     </dict>
@@ -17868,6 +17912,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>60</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
     </dict>
     <key>comma</key>
     <dict>
@@ -17989,6 +18035,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>-130</integer>
+      <key>uni20B9</key>
+      <integer>-35</integer>
       <key>yen</key>
       <integer>-130</integer>
     </dict>
@@ -18409,6 +18457,8 @@
       <integer>65</integer>
       <key>uni1E9E</key>
       <integer>20</integer>
+      <key>uni20B9</key>
+      <integer>40</integer>
       <key>zero</key>
       <integer>25</integer>
     </dict>
@@ -18899,6 +18949,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>-130</integer>
+      <key>uni20B9</key>
+      <integer>-35</integer>
       <key>yen</key>
       <integer>-130</integer>
     </dict>
@@ -19066,6 +19118,8 @@
       <integer>-60</integer>
       <key>uni0218</key>
       <integer>25</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
       <key>yen</key>
       <integer>-60</integer>
     </dict>
@@ -19233,6 +19287,8 @@
       <integer>-60</integer>
       <key>uni0218</key>
       <integer>25</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
       <key>yen</key>
       <integer>-60</integer>
     </dict>
@@ -20147,6 +20203,8 @@
       <integer>-160</integer>
       <key>uni1E9E</key>
       <integer>-25</integer>
+      <key>uni20B9</key>
+      <integer>-20</integer>
       <key>yen</key>
       <integer>-190</integer>
       <key>zero</key>
@@ -20312,6 +20370,8 @@
       <integer>-25</integer>
       <key>uni0218</key>
       <integer>-25</integer>
+      <key>uni20B9</key>
+      <integer>-30</integer>
       <key>yen</key>
       <integer>-150</integer>
     </dict>
@@ -20642,6 +20702,8 @@
       <integer>-25</integer>
       <key>uni0218</key>
       <integer>-25</integer>
+      <key>uni20B9</key>
+      <integer>-30</integer>
       <key>yen</key>
       <integer>-150</integer>
     </dict>
@@ -20974,6 +21036,8 @@
       <integer>-60</integer>
       <key>uni0218</key>
       <integer>25</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
       <key>yen</key>
       <integer>-60</integer>
     </dict>
@@ -21305,6 +21369,8 @@
       <integer>-25</integer>
       <key>uni1E9E</key>
       <integer>-25</integer>
+      <key>uni20B9</key>
+      <integer>-40</integer>
       <key>yen</key>
       <integer>-95</integer>
       <key>zero</key>
@@ -21567,6 +21633,8 @@
       <integer>-30</integer>
       <key>trademark</key>
       <integer>-20</integer>
+      <key>uni20B9</key>
+      <integer>-40</integer>
       <key>yen</key>
       <integer>-135</integer>
     </dict>
@@ -22438,6 +22506,8 @@
       <integer>65</integer>
       <key>uni1E9E</key>
       <integer>20</integer>
+      <key>uni20B9</key>
+      <integer>40</integer>
       <key>zero</key>
       <integer>25</integer>
     </dict>
@@ -22724,6 +22794,8 @@
       <integer>-55</integer>
       <key>uni0218</key>
       <integer>-45</integer>
+      <key>uni20B9</key>
+      <integer>-20</integer>
       <key>zero</key>
       <integer>-55</integer>
     </dict>
@@ -22964,6 +23036,8 @@
       <integer>-35</integer>
       <key>uni021A</key>
       <integer>-35</integer>
+      <key>uni20B9</key>
+      <integer>-30</integer>
       <key>yen</key>
       <integer>-30</integer>
     </dict>
@@ -23087,6 +23161,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>-130</integer>
+      <key>uni20B9</key>
+      <integer>-35</integer>
       <key>yen</key>
       <integer>-130</integer>
     </dict>
@@ -23258,6 +23334,8 @@
       <integer>-60</integer>
       <key>uni0218</key>
       <integer>25</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
       <key>yen</key>
       <integer>-60</integer>
     </dict>
@@ -23923,6 +24001,8 @@
       <integer>-345</integer>
       <key>uni1E9E</key>
       <integer>-165</integer>
+      <key>uni20B9</key>
+      <integer>-155</integer>
       <key>yen</key>
       <integer>-325</integer>
       <key>zero</key>
@@ -24088,6 +24168,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>60</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
     </dict>
     <key>quotedblbase</key>
     <dict>
@@ -24209,6 +24291,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>-130</integer>
+      <key>uni20B9</key>
+      <integer>-35</integer>
       <key>yen</key>
       <integer>-130</integer>
     </dict>
@@ -24348,6 +24432,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>60</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
     </dict>
     <key>quotedblright</key>
     <dict>
@@ -24475,6 +24561,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>60</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
     </dict>
     <key>quoteleft</key>
     <dict>
@@ -24612,6 +24700,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>60</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
     </dict>
     <key>quoteright</key>
     <dict>
@@ -24739,6 +24829,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>60</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
     </dict>
     <key>quotesinglbase</key>
     <dict>
@@ -24860,6 +24952,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>-130</integer>
+      <key>uni20B9</key>
+      <integer>-35</integer>
       <key>yen</key>
       <integer>-130</integer>
     </dict>
@@ -25023,6 +25117,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>60</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
     </dict>
     <key>registered</key>
     <dict>
@@ -25382,6 +25478,8 @@
       <integer>25</integer>
       <key>uni021A</key>
       <integer>60</integer>
+      <key>uni20B9</key>
+      <integer>30</integer>
     </dict>
     <key>seven</key>
     <dict>
@@ -26028,6 +26126,8 @@
       <integer>-65</integer>
       <key>uni021A</key>
       <integer>-85</integer>
+      <key>uni20B9</key>
+      <integer>-45</integer>
       <key>yen</key>
       <integer>-105</integer>
     </dict>
@@ -26432,6 +26532,8 @@
       <integer>70</integer>
       <key>uni1E9E</key>
       <integer>20</integer>
+      <key>uni20B9</key>
+      <integer>40</integer>
       <key>zero</key>
       <integer>25</integer>
     </dict>
@@ -27045,6 +27147,8 @@
       <integer>-250</integer>
       <key>uni021A</key>
       <integer>-285</integer>
+      <key>uni20B9</key>
+      <integer>-45</integer>
       <key>yen</key>
       <integer>-275</integer>
     </dict>
@@ -27499,6 +27603,115 @@
       <integer>-125</integer>
       <key>yen</key>
       <integer>-135</integer>
+    </dict>
+    <key>uni20B9</key>
+    <dict>
+      <key>A</key>
+      <integer>-150</integer>
+      <key>AE</key>
+      <integer>-150</integer>
+      <key>Aacute</key>
+      <integer>-150</integer>
+      <key>Abreve</key>
+      <integer>-150</integer>
+      <key>Acircumflex</key>
+      <integer>-150</integer>
+      <key>Adieresis</key>
+      <integer>-150</integer>
+      <key>Agrave</key>
+      <integer>-150</integer>
+      <key>Amacron</key>
+      <integer>-150</integer>
+      <key>Aogonek</key>
+      <integer>-150</integer>
+      <key>Aring</key>
+      <integer>-150</integer>
+      <key>Atilde</key>
+      <integer>-150</integer>
+      <key>Dcroat</key>
+      <integer>75</integer>
+      <key>Eth</key>
+      <integer>75</integer>
+      <key>Hbar</key>
+      <integer>45</integer>
+      <key>J</key>
+      <integer>-45</integer>
+      <key>T</key>
+      <integer>25</integer>
+      <key>Tcaron</key>
+      <integer>25</integer>
+      <key>ampersand</key>
+      <integer>-20</integer>
+      <key>asciicircum</key>
+      <integer>-20</integer>
+      <key>braceleft</key>
+      <integer>-25</integer>
+      <key>bullet</key>
+      <integer>35</integer>
+      <key>colon</key>
+      <integer>40</integer>
+      <key>comma</key>
+      <integer>-130</integer>
+      <key>degree</key>
+      <integer>45</integer>
+      <key>ellipsis</key>
+      <integer>-130</integer>
+      <key>emdash</key>
+      <integer>35</integer>
+      <key>endash</key>
+      <integer>35</integer>
+      <key>greater</key>
+      <integer>-35</integer>
+      <key>guillemotright</key>
+      <integer>-25</integer>
+      <key>guilsinglright</key>
+      <integer>-25</integer>
+      <key>hyphen</key>
+      <integer>35</integer>
+      <key>less</key>
+      <integer>-30</integer>
+      <key>multiply</key>
+      <integer>-20</integer>
+      <key>one</key>
+      <integer>-60</integer>
+      <key>ordmasculine</key>
+      <integer>45</integer>
+      <key>period</key>
+      <integer>-130</integer>
+      <key>periodcentered</key>
+      <integer>35</integer>
+      <key>plus</key>
+      <integer>-35</integer>
+      <key>questiondown</key>
+      <integer>-190</integer>
+      <key>quotedbl</key>
+      <integer>40</integer>
+      <key>quotedblbase</key>
+      <integer>-130</integer>
+      <key>quotedblleft</key>
+      <integer>35</integer>
+      <key>quotedblright</key>
+      <integer>40</integer>
+      <key>quoteleft</key>
+      <integer>35</integer>
+      <key>quoteright</key>
+      <integer>40</integer>
+      <key>quotesinglbase</key>
+      <integer>-130</integer>
+      <key>quotesingle</key>
+      <integer>40</integer>
+      <key>semicolon</key>
+      <integer>40</integer>
+      <key>seven</key>
+      <integer>25</integer>
+      <key>slash</key>
+      <integer>-150</integer>
+      <key>sterling</key>
+      <integer>-30</integer>
+      <key>trademark</key>
+      <integer>50</integer>
+      <key>uni021A</key>
+      <integer>25</integer>
     </dict>
     <key>yen</key>
     <dict>

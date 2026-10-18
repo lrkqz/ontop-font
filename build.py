@@ -108,7 +108,7 @@ contours = {}
 for n in names:
     p = paths[n]
     if p is None:
-        metrics[n] = (SPACE_W, 0); shift[n] = 0; contours[n] = []
+        metrics[n] = (0 if n in GL.ZERO_WIDTH else SPACE_W, 0); shift[n] = 0; contours[n] = []
         continue
     contours[n] = flatten(p)
     if n in BASE_OF:
@@ -142,7 +142,7 @@ from shapely.ops import unary_union  # noqa: E402
 from shapely import affinity  # noqa: E402
 
 KERNABLE = [n for n in names if n not in (".notdef", "space", "uni25CC") and n not in GL.COMBINING_MARKS
-            and n not in GL.SPACING_ACCENTS]
+            and n not in GL.SPACING_ACCENTS and paths[n] is not None]
 FIGURES = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 prof, shapes = {}, {}
 for n in KERNABLE:
@@ -209,6 +209,11 @@ touching = [(a, b, round(distance(a, b, kerns.get((a, b), 0)), 1)) for a in KERN
 
 # --- features ----------------------------------------------------------------------------------
 fea = ["languagesystem DFLT dflt;", "languagesystem latn dflt;", ""]
+# One style: Regular, upright (the STAT table Google asks of a static font too).
+fea += ["table STAT {", '  ElidedFallbackName { name "Regular"; };', '  DesignAxis wght 0 { name "Weight"; };',
+        '  DesignAxis ital 1 { name "Italic"; };',
+        '  AxisValue { location wght 400; name "Regular"; flag ElidableAxisValueName; };',
+        '  AxisValue { location ital 0; name "Roman"; flag ElidableAxisValueName; };', "} STAT;", ""]
 by_tag = {}
 for alt, (base, tag, label) in GL.ALT.items():
     by_tag.setdefault(tag, []).append((base, alt, label))
@@ -336,7 +341,7 @@ def common(fb):
         version=4, usWeightClass=400, usWidthClass=9, achVendID=CONFIG.get("vendor", "NONE")[:4].ljust(4),
         sTypoAscender=ASC, sTypoDescender=DESC, sTypoLineGap=0,
         usWinAscent=int(max(ASC, ymax + 10)), usWinDescent=int(max(-DESC, -ymin + 10)),
-        sxHeight=700, sCapHeight=700, fsSelection=0x40 | 0x80, fsType=CONFIG.get("fsType", 0),
+        sxHeight=700, sCapHeight=700, fsSelection=0x40 | 0x80 | 0x100, fsType=CONFIG.get("fsType", 0),
         ySubscriptXSize=650, ySubscriptYSize=600, ySubscriptYOffset=75, ySubscriptXOffset=0,
         ySuperscriptXSize=650, ySuperscriptYSize=600, ySuperscriptYOffset=350, ySuperscriptXOffset=0,
         yStrikeoutSize=HM_BAR, yStrikeoutPosition=int(350 + HM_BAR / 2),
@@ -410,7 +415,7 @@ def write_ufo(path):
     ymin = min(paths[n].bounds[1] for n in names if paths[n] is not None)
     i.openTypeOS2WinAscent = int(max(ASC, ymax + 10))
     i.openTypeOS2WinDescent = int(max(-DESC, -ymin + 10))
-    i.openTypeOS2Selection = [7]               # USE_TYPO_METRICS
+    i.openTypeOS2Selection = [7, 8]            # USE_TYPO_METRICS, WWS (the names are WWS-conformant)
     i.openTypeOS2Type = []                     # installable: fsType 0
     i.openTypeOS2VendorID = CONFIG.get("vendor", "NONE")[:4].ljust(4)
     i.openTypeOS2WeightClass, i.openTypeOS2WidthClass = 400, 9

@@ -220,6 +220,9 @@
       <string>commaaccentcomb</string>
       <string>cedillacomb</string>
       <string>ogonekcomb</string>
+      <string>uni20B9</string>
+      <string>uni2028</string>
+      <string>uni2029</string>
     </array>
     <key>public.openTypeCategories</key>
     <dict>
@@ -646,6 +649,8 @@
       <key>uni021A</key>
       <string>base</string>
       <key>uni1E9E</key>
+      <string>base</string>
+      <key>uni20B9</key>
       <string>base</string>
       <key>uni25CC</key>
       <string>base</string>

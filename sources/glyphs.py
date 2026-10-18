@@ -1964,6 +1964,57 @@ for _code, _mark in COMBINING.items():
 
 
 # =============================================================================================
+# For fontspector's Google Fonts profile
+# =============================================================================================
+
+DESIGN_NAMES["rupee"] = "₹"
+
+
+def rupee_shape(leg_x, W=1180):
+    """The 3's upper storeys as one bowl, open on the left (its top a straight bar, its foot the
+    middle bar, rounding with the O's corner), and the R's leg at the N's angle leaving its foot
+    at leg_x."""
+    upper = minus(rect(0, Y_M0, W, CH, None, None, BIG, None),
+                  rect(-10, Y_M1, W - VR, Y_T0, None, CNT3, CNT3, None))
+    m = -1.2246
+    h = diag_h(m)
+    a = leg_x - m * Y_M0
+    leg = clip(band(m, a, a + h, 0, Y_M1), rect(0, 0, W, Y_M1))   # it runs on into the bar, no step
+    return union(upper, leg)
+
+
+@variant("rupee", "1", "Bein vom linken Ende")
+def rupee_left():
+    return rupee_shape(0)
+
+
+@variant("rupee", "2", "Bein weiter innen")
+def rupee_inner():
+    return rupee_shape(250)
+
+
+@glyph("uni20B9", 0x20B9)
+def rupee():
+    return drawn("rupee")
+
+
+DEPENDS["uni20B9"] = ["rupee"]
+
+# The line and paragraph separators: no ink and no width.
+ZERO_WIDTH = {"uni2028", "uni2029"}
+
+
+@glyph("uni2028", 0x2028)
+def lineseparator():
+    return None
+
+
+@glyph("uni2029", 0x2029)
+def paragraphseparator():
+    return None
+
+
+# =============================================================================================
 # The designer's choices
 # =============================================================================================
 # Review round 1 (2026-10-17), accents and strokes, as @lrkqz picked them from the variants:

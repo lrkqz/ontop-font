@@ -1,6 +1,14 @@
 languagesystem DFLT dflt;
 languagesystem latn dflt;
 
+table STAT {
+  ElidedFallbackName { name "Regular"; };
+  DesignAxis wght 0 { name "Weight"; };
+  DesignAxis ital 1 { name "Italic"; };
+  AxisValue { location wght 400; name "Regular"; flag ElidableAxisValueName; };
+  AxisValue { location ital 0; name "Roman"; flag ElidableAxisValueName; };
+} STAT;
+
 feature ss01 {
   featureNames { name "A rund"; };
   sub A by A.ss01;
