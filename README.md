@@ -6,7 +6,7 @@ measurements taken off the logo, and drawn as vectors in code. No outline comes 
 
 ![On Top specimen](specimen/specimen.png)
 
-**Kurz auf Deutsch:** On Top ist die Schrift von @lrkqz, gezeichnet aus seinem ON-TOP-Logo. Sie steht
+**Kurz auf Deutsch:** On Top ist die Schrift von @lrkqz, gezeichnet aus dem ON-TOP-Logo von @lrkqz. Sie steht
 unter der SIL Open Font License 1.1 (siehe [OFL.txt](OFL.txt)): jeder darf sie frei benutzen, auch
 kommerziell, verändern und weitergeben; die Urheberangabe bleibt in den Dateien. Die Dateien zum
 Benutzen liegen in `fonts/`, das Musterblatt in `specimen/`.
@@ -54,6 +54,21 @@ The caps sit in the middle of the line box (ascender 950, descender −250, cap 
 units to the em), so any `line-height` centres them. Accents stand 100 above the caps and reach up
 to 1049; the marks below reach down to −282.
 
+## About
+
+On Top is designed by [@lrkqz](https://github.com/lrkqz), from the ON TOP logo of @lrkqz.
+
+## Building
+
+If you want to build the fonts on your own computer:
+
+- `make build` (or `python build.py` in a virtual environment with `requirements.txt` installed) draws
+  the glyphs, writes `sources/OnTop-Regular.ufo` and builds the font files into `fonts/` with
+  gftools builder.
+- `make test` runs [Fontspector](https://fonttools.github.io/fontspector/)'s quality assurance tests
+  (googlefonts profile).
+- `make check` checks the outlines and the fit to the logo.
+
 ## How it is made
 
 The sources are Python. One command draws, spaces and kerns every glyph, writes the UFO and builds
@@ -94,10 +109,23 @@ venv/Scripts/python build.py
 average 0.52 px from the logo's, 95 % of them within 1.32 px, at a cap height of 164 px. The logo's
 two Os differ from each other by 2.4 px; the face has one O between them.
 
-## Licence
+## Changelog
+
+**18 October 2026. Version 1.000**
+
+- First release for Google Fonts: GF Latin Core, accents on their own and as combining marks, SIL
+  Open Font License 1.1.
+
+## License
 
 Copyright 2026 The On Top Project Authors (https://github.com/lrkqz/ontop-font). Designed by
 [@lrkqz](https://github.com/lrkqz).
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is
 copied in [OFL.txt](OFL.txt), and is also available with a FAQ at https://openfontlicense.org.
+
+## Repository Layout
+
+This font repository structure is inspired by [Unified Font Repository
+v0.3](https://github.com/unified-font-repository/Unified-Font-Repository), modified for the Google
+Fonts workflow.

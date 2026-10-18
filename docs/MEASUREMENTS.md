@@ -123,8 +123,8 @@ the round A, C and D. He ordered:
 
 Google asks for GF Latin Core (319 code points); the approved set had 115. The new glyphs follow
 the same rules; each new design was drawn in two or three variants, shown to @lrkqz in a review
-font where he switched between them (`build.py --review`), and he chose (`CHOSEN` in
-`sources/glyphs.py`, his numbers quoted there). Nothing approved before was touched:
+font that switches between them (`build.py --review`), and @lrkqz chose (`CHOSEN` in
+`sources/glyphs.py`, the choices quoted there). Nothing approved before was touched:
 `tools/check_approved.py` compares every approved glyph, its metrics and its kerning with the
 1.000 build.
 
