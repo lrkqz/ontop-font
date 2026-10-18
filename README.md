@@ -17,7 +17,7 @@ Benutzen liegen in `fonts/`, das Musterblatt in `specimen/`.
   capital of the Latin Core languages, Æ Œ Ø Þ Đ Ð Ħ Ł Ä Ö Ü ẞ; the lower case is set on the same
   forms, so a word typed in any case sets in capitals.
 - **Figures 0–9** and **. , : ; … - – — · • ? ! ¡ ¿ ' " ’ ‘ ‚ “ „ ” « » ‹ › / \ | & # + − = < > × ÷
-  * _ ( ) [ ] { } % € $ ¢ £ ¥ @ © ® ™ § ¶ ° ª º ^ ~**, the accents on their own and as combining
+  * _ ( ) [ ] { } % € $ ¢ £ ¥ ₹ @ © ® ™ § ¶ ° ª º ^ ~**, the accents on their own and as combining
   marks (positioned on every letter with the `mark` feature).
 - **Spacing and kerning** (pair kerning in GPOS), calibrated on the logo, so that "ON TOP" set in
   the face falls on the logo; every kerned pair is checked so that no two outlines come too near.
@@ -110,6 +110,11 @@ average 0.52 px from the logo's, 95 % of them within 1.32 px, at a cap height of
 two Os differ from each other by 2.4 px; the face has one O between them.
 
 ## Changelog
+
+**18 October 2026. Version 1.001**
+
+- For fontspector's Google Fonts profile: a STAT table, the WWS bit, the line and paragraph
+  separators, the Indian Rupee Sign ₹; the project template's Makefile and requirements.in.
 
 **18 October 2026. Version 1.000**
 

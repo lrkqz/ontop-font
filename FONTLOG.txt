@@ -26,6 +26,11 @@ writes the UFO sources/OnTop-Regular.ufo and builds the fonts from it with gftoo
 ChangeLog
 ---------
 
+2026-10-18 (@lrkqz) On Top v1.001
+- For fontspector's Google Fonts profile: a STAT table, the WWS bit, U+2028 and U+2029, the Indian
+  Rupee Sign ₹ (chosen by @lrkqz from two variants).
+- The Google Fonts project template's Makefile, requirements.in and README sections.
+
 2026-10-18 (@lrkqz) On Top v1.000
 - Released under the SIL Open Font License 1.1 for Google Fonts.
 - GF Latin Core: the accents, the accented capitals, Æ Œ Ø Þ Đ Ð Ħ Ł, the signs ¢ £ ¥ © ® ™

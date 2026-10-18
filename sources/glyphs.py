@@ -2027,4 +2027,6 @@ CHOSEN = {"acute": "1", "circumflex": "1", "tilde": "2", "macron": "2", "breve":
 CHOSEN.update({"AE": "2", "OE": "2", "Thorn": "1", "cent": "1", "sterling": "1", "yen": "1", "copyright": "1",
                "trademark": "2", "section": "1", "paragraph": "2", "brace": "2", "inverted": "2", "bullet": "1",
                "ordinal": "1", "asciicircum": "1"})
+# Review round 3 (2026-10-18), the Indian Rupee Sign fontspector asks for: "1:2 Bein weiter innen".
+CHOSEN.update({"rupee": "2"})
 VARIANT.update(CHOSEN)
