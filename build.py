@@ -1,7 +1,7 @@
 """Build the typeface: python build.py [--review | --direct]
 
 Draws every glyph from sources/glyphs.py, spaces and kerns it (sources/spacing.py), writes the
-UFO sources/OnTop.ufo and builds fonts/otf, fonts/ttf and fonts/webfonts (WOFF2) from it with
+UFO sources/OnTop-Regular.ufo and builds fonts/otf, fonts/ttf and fonts/webfonts (WOFF2) from it with
 Google's builder (gftools builder sources/config.yaml), as Google's toolchain does.
 Needs: pip install -r requirements.txt
 
@@ -98,7 +98,7 @@ FIXED = {
     "bullet": (60, 60), "ordfeminine": (50, 50), "ordmasculine": (50, 50), "divide": (60, 60), "minus": (60, 60),
     "backslash": (20, 20), "asciicircum": (60, 60), "asciitilde": (60, 60), "copyright": (60, 60),
     "registered": (60, 60), "trademark": (50, 50), "section": (60, 60), "paragraph": (60, 60),
-    **{n: (60, 60) for n in GL.SPACING_ACCENTS},
+    **{n: (60, 60) for n in GL.SPACING_ACCENTS}, "uni25CC": (60, 60),
 }
 SPACE_W = 545            # the image's word space: N's 72 + 545 + T's 25 = the 642 measured
 ONE_LEFT = 120           # the 1 is narrow; it needs room on the side of its flag
@@ -141,7 +141,7 @@ from shapely.geometry import Polygon  # noqa: E402
 from shapely.ops import unary_union  # noqa: E402
 from shapely import affinity  # noqa: E402
 
-KERNABLE = [n for n in names if n not in (".notdef", "space") and n not in GL.COMBINING_MARKS
+KERNABLE = [n for n in names if n not in (".notdef", "space", "uni25CC") and n not in GL.COMBINING_MARKS
             and n not in GL.SPACING_ACCENTS]
 FIGURES = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"}
 prof, shapes = {}, {}
@@ -226,30 +226,49 @@ for tag, (design, subs) in CV.items():
         fea.append(f"  sub {n} from [{' '.join(alts)}];")
     fea.append(f"}} {tag};")
 # Marks: every letter has an anchor over its middle (TOP_X where it differs), under the middle of
-# its foot, and where the ogonek stands; the combining marks attach there.
-LETTERS_FOR_MARKS = [n for n in names if paths.get(n) is not None and n not in BASE_OF
-                     and (len(n.split(".")[0]) == 1 and n[0].isalpha() or n.split(".")[0] in ("AE", "OE", "Thorn", "uni1E9E"))]
+# its foot, and where the ogonek stands; the combining marks attach there. On a letter that carries
+# a mark already, and on a mark, the next mark stands MARK_GAP above (or below) it.
+MARK_GAP = 60
+LETTERS_FOR_MARKS = [n for n in names if paths.get(n) is not None and n not in GL.COMBINING_MARKS
+                     and (n in BASE_OF or len(n.split(".")[0]) == 1 and n[0].isalpha()
+                          or n.split(".")[0] in ("AE", "OE", "Thorn", "uni1E9E", "uni25CC"))]
 
 
 def anchors_of(n):
-    base = n.split(".")[0]
-    b = paths[n].bounds
-    mid = (b[0] + b[2]) / 2
-    top = GL.TOP_X.get(base, mid)
-    og = GL.OGONEK_X.get(base, b[2] - 150)
-    return {"top": (top + shift[n], GL.CH), "bottom": (mid + shift[n], 0), "ogonek": (og + shift[n], 0)}
+    base = BASE_OF.get(n, n)
+    letter = base.split(".")[0]
+    b, bb = paths[n].bounds, paths[base].bounds
+    mid = (bb[0] + bb[2]) / 2
+    top = GL.TOP_X.get(letter, mid)
+    og = GL.OGONEK_X.get(letter, bb[2] - 150)
+    top_y = b[3] + MARK_GAP - GL.DOT_GAP if b[3] > max(bb[3], GL.CH) + 1 else GL.CH
+    bottom_y = b[1] - MARK_GAP if b[1] < min(bb[1], 0) - 1 else 0
+    return {"top": (top + shift[n], top_y), "bottom": (mid + shift[n], bottom_y), "ogonek": (og + shift[n], 0)}
 
 
 MARK_ANCHOR = {"cedilla": "bottom", "commaaccent": "bottom", "ogonek": "ogonek"}
+
+
+def mark_anchors(n):
+    """A combining mark's own anchor (_top, _bottom, _ogonek) and the one the next mark takes."""
+    kind = MARK_ANCHOR.get(GL.COMBINING_MARKS[n], "top")
+    b = paths[n].bounds
+    own = ("_" + kind, (GL.COMBINING_X, GL.CH if kind == "top" else 0))
+    if kind == "top":
+        return [own, ("top", (GL.COMBINING_X, b[3] + MARK_GAP - GL.DOT_GAP))]
+    if kind == "bottom":
+        return [own, ("bottom", (GL.COMBINING_X, b[1] - MARK_GAP))]
+    return [own]
+
+
 fea.append("table GDEF {")
 fea.append("  GlyphClassDef [{}], , [{}], ;".format(
     " ".join(n for n in names if n not in GL.COMBINING_MARKS and paths.get(n) is not None),
     " ".join(GL.COMBINING_MARKS)))
 fea.append("} GDEF;")
-for n, mark in GL.COMBINING_MARKS.items():
-    kind = MARK_ANCHOR.get(mark, "top")
-    y = 0 if kind != "top" else GL.CH
-    fea.append(f"markClass {n} <anchor {GL.COMBINING_X} {y}> @MC_{kind};")
+for n in GL.COMBINING_MARKS:
+    (own, (x, y)) = mark_anchors(n)[0]
+    fea.append(f"markClass {n} <anchor {x} {y}> @MC_{own[1:]};")
 fea.append("feature mark {")
 for kind in ("top", "bottom", "ogonek"):
     fea.append(f"  lookup mark_{kind} {{")
@@ -258,6 +277,15 @@ for kind in ("top", "bottom", "ogonek"):
         fea.append(f"    pos base {n} <anchor {int(round(x))} {int(round(y))}> mark @MC_{kind};")
     fea.append(f"  }} mark_{kind};")
 fea.append("} mark;")
+fea.append("feature mkmk {")
+for kind in ("top", "bottom"):
+    fea.append(f"  lookup mkmk_{kind} {{")
+    for n in GL.COMBINING_MARKS:
+        for name, (x, y) in mark_anchors(n)[1:]:
+            if name == kind:
+                fea.append(f"    pos mark {n} <anchor {int(round(x))} {int(round(y))}> mark @MC_{kind};")
+    fea.append(f"  }} mkmk_{kind};")
+fea.append("} mkmk;")
 fea.append("feature kern {")
 for (a, b), k in sorted(kerns.items()):
     fea.append(f"  pos {a} {b} {k};")
@@ -407,9 +435,10 @@ def write_ufo(path):
             for kind, (x, y) in anchors_of(n).items():
                 g.appendAnchor({"name": kind, "x": int(round(x)), "y": int(round(y))})
         if n in GL.COMBINING_MARKS:
-            kind = MARK_ANCHOR.get(GL.COMBINING_MARKS[n], "top")
-            g.appendAnchor({"name": "_" + kind, "x": GL.COMBINING_X, "y": GL.CH if kind == "top" else 0})
+            for name, (x, y) in mark_anchors(n):
+                g.appendAnchor({"name": name, "x": int(round(x)), "y": int(round(y))})
     ufo.lib["public.glyphOrder"] = names
+    ufo.lib["public.openTypeMeta"] = {"dlng": ["Latn"], "slng": ["Latn"]}
     ufo.lib["public.openTypeCategories"] = {n: ("mark" if n in GL.COMBINING_MARKS else "base")
                                             for n in names if paths[n] is not None}
     ufo.kerning = {(a, b): k for (a, b), k in sorted(kerns.items())}
@@ -449,7 +478,7 @@ def main():
         for p in (ttf, woff2):
             print(os.path.relpath(p, HERE), os.path.getsize(p))
         return
-    write_ufo(os.path.join(HERE, "sources", base + ".ufo"))
+    write_ufo(os.path.join(HERE, "sources", base + "-Regular.ufo"))
     direct = "--direct" in sys.argv
     out = os.path.join(HERE, "build", "direct") if direct else os.path.join(HERE, "fonts")
     otf = os.path.join(out, "otf", base + "-Regular.otf")

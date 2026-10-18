@@ -19,7 +19,7 @@ ink starting at x = 0 (spacing is added in spacing.py).
 """
 import math
 from geometry import (rect, poly, band, union, minus, clip, mirror_x, mirror_y, rotate180, rotate90, translate,
-                      line_through, scale)
+                      line_through, scale, merge_colinear)
 
 CH = 700
 
@@ -1457,7 +1457,7 @@ def ae_shape(W=1760, xs=900, round_a=False):
     h = diag_h(A_SLOPE)
     leg = band(A_SLOPE, 0, h, 0, CH)
     left = clip(bars, poly((0, 0), (W + 10, 0), (W + 10, CH), (A_SLOPE * CH, CH)))
-    return union(leg, left)
+    return merge_colinear(union(leg, left))      # the leg's edge in one piece, not cut at the bars
 
 
 @variant("AE", "1", "E-Teil breit")
@@ -1794,7 +1794,8 @@ def inverted(sign):
     p = sign()
     b = p.bounds
     r = rotate180(p, (b[0] + b[2]) / 2, CH / 2)
-    return translate(r, 0, -250) if VARIANT["inverted"] == "2" else r
+    # lowered so its foot stands on the descender (5 short of it: no point near the baseline)
+    return translate(r, 0, -245) if VARIANT["inverted"] == "2" else r
 
 
 @glyph("exclamdown", 0xA1)
@@ -1914,6 +1915,16 @@ for _n, _d in (("cent", "cent"), ("sterling", "sterling"), ("yen", "yen"), ("cop
                ("exclamdown", "inverted"), ("questiondown", "inverted"), ("bullet", "bullet"),
                ("ordfeminine", "ordinal"), ("ordmasculine", "ordinal"), ("asciicircum", "asciicircum")):
     DEPENDS[_n] = [_d]
+
+
+@glyph("uni25CC", 0x25CC)
+def dottedcircle(rx=360, ry=270, n=8, dw=145, dh=110):
+    # The dotted circle a lone combining mark is shown on: eight dots round the middle of the caps,
+    # each a square before the stretch at the weight of the * (110).
+    cx, cy = rx + dw / 2, CH / 2
+    return union(*(rect(cx + rx * math.cos(2 * math.pi * i / n) - dw / 2, cy + ry * math.sin(2 * math.pi * i / n) - dh / 2,
+                        cx + rx * math.cos(2 * math.pi * i / n) + dw / 2, cy + ry * math.sin(2 * math.pi * i / n) + dh / 2)
+                   for i in range(n)))
 
 
 # =============================================================================================

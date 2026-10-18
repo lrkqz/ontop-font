@@ -1,9 +1,9 @@
 # gftools builder configuration (https://github.com/googlefonts/gftools).
-# OnTop.ufo is written by build.py from the geometry in glyphs.py; build with
+# OnTop-Regular.ufo is written by build.py from the geometry in glyphs.py; build with
 #   gftools builder sources/config.yaml
 # or python build.py, which writes the UFO first.
 sources:
-  - OnTop.ufo
+  - OnTop-Regular.ufo
 familyName: "On Top"
 
 # One static style.
@@ -20,3 +20,6 @@ autohintOTF: false
 
 # The outlines come out of skia-pathops without overlaps.
 removeOutlineOverlaps: false
+
+# Curves to quadratics within 0.6 units, as the face was approved (fontmake's default is 1).
+extraFontmakeArgs: "--conversion-error 0.0006"

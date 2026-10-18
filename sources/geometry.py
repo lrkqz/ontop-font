@@ -196,6 +196,54 @@ def scale(path, sx, sy=None, cx=0, cy=0):
     return pathops.op(out, out, pathops.PathOp.UNION)
 
 
+def merge_colinear(path, tol=0.05):
+    """Drop the on-curve points that sit between two straight segments on one line (left where a
+    boolean operation cut a straight edge)."""
+    contours, cur = [], None
+    for verb, pts in path:
+        if verb == pathops.PathVerb.MOVE:
+            cur = [("M", pts[0], ())]
+        elif verb == pathops.PathVerb.LINE:
+            cur.append(("L", pts[0], ()))
+        elif verb == pathops.PathVerb.CUBIC:
+            cur.append(("C", pts[2], (pts[0], pts[1])))
+        elif verb == pathops.PathVerb.CLOSE:
+            contours.append(cur)
+            cur = None
+    out = pathops.Path()
+    for c in contours:
+        # cyclic list of (point, kind of the segment arriving at it, its control points)
+        start = c[0][1]
+        nodes = [(p, k, ctl) for k, p, ctl in c[1:]]
+        if nodes and nodes[-1][0] == start:
+            nodes[-1] = (start, nodes[-1][1], nodes[-1][2])
+        else:
+            nodes.append((start, "L", ()))
+        changed = True
+        while changed and len(nodes) > 3:
+            changed = False
+            for i in range(len(nodes)):
+                p0 = nodes[i - 1][0]
+                p1, k1, _ = nodes[i]
+                p2, k2, _ = nodes[(i + 1) % len(nodes)]
+                if k1 == "L" and k2 == "L":
+                    cross = (p1[0] - p0[0]) * (p2[1] - p0[1]) - (p1[1] - p0[1]) * (p2[0] - p0[0])
+                    span = math.hypot(p2[0] - p0[0], p2[1] - p0[1])
+                    if span > 0 and abs(cross) / span < tol:
+                        del nodes[i]
+                        changed = True
+                        break
+        first = nodes[-1][0]
+        out.moveTo(*first)
+        for j, (p, k, ctl) in enumerate(nodes):
+            if k == "C":
+                out.cubicTo(*ctl[0], *ctl[1], *p)
+            elif j < len(nodes) - 1:
+                out.lineTo(*p)            # the last line, back to the start, is the close
+        out.close()
+    return out
+
+
 def bounds(path):
     if path is None:
         return None

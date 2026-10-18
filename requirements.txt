@@ -4,3 +4,6 @@ skia-pathops>=0.8
 shapely>=2.0
 Pillow>=10
 numpy>=1.26
+ufoLib2>=0.16
+fontmake>=3.9
+gftools>=0.10

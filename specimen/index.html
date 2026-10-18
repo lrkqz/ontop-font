@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ON TOP – Schriftmuster</title>
+<title>On Top – Schriftmuster</title>
 <style>
   @font-face {
     font-family: "On Top";
@@ -74,6 +74,8 @@
     <div class="face l">ZWÖLF BOXKÄMPFER JAGEN VIKTOR QUER ÜBER DEN GROSSEN SYLTER DEICH</div>
     <div class="face l">AVATAR · TAPAS · FLY · WAVY · LT · PA</div>
     <div class="face m">0123456789 — 12:30 · 50% · 12€ · #1 · A&amp;B · (OK) · [1] · „JA“ ‚NEIN‘ · «GUT» · HALLO, WELT! WARUM? INFO@ONTOP · STRASSE · STRAẞE · 3×4=12 · 20° · $5 …</div>
+    <div class="face l">FRANÇAIS · ESPAÑOL · PORTUGUÊS · ČEŠTINA · ŁÓDŹ · ÅRHUS · KØBENHAVN</div>
+    <div class="face m">ZAŻÓŁĆ GĘŚLĄ JAŹŃ · ÁRVÍZTŰRŐ TÜKÖRFÚRÓGÉP · ĢIRTS ĶĒNIŅŠ · ȘTEFAN ȚARĂ · ĞÜNEŞ · ĦAŻ-ŻEBBUĠ · ÞÓR · ŒUVRE · ÆBLE · ĐAKOVO · ¡HOLA! ¿QUÉ? · © 2026 · ON TOP™ · § 1 · ¶ 2 · {A, B} · £5 · ¥50 · 99¢ · 1º · 2ª · 6÷2 · 5−3 · A\B · ~1 · 2^8</div>
   </section>
 
   <section class="ref">
@@ -85,7 +87,9 @@
   </section>
 </main>
 <script>
-  const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜẞ0123456789.,:;…-–—·?!'\"’‘‚“„”«»‹›/|&#+=<>×*_()[]%€$@°";
+  const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜẞ" +
+    "ÀÁÂÃÅĀĂĄÆÇĆĊČĎĐÐÈÉÊËĚĖĒĘĞĠĢĦÌÍÎÏĪĮİĶĹĻĽŁŃŅŇÑÒÓÔÕŐØŒŔŘŚŞŠȘŤȚÞÙÚÛŰŪŮŲẀẂŴẄỲÝŶŸŹŻŽ" +
+    "0123456789.,:;…-–—·•?!¡¿'\"’‘‚“„”«»‹›/\\|&#+−=<>×÷*_()[]{}%€$¢£¥@©®™§¶°ªº^~´`ˆˇ˘˙˚˛¸˜˝¨¯◌";
   const grid = document.getElementById("grid");
   for (const ch of CHARS) {
     const c = document.createElement("div");

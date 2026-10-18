@@ -1,0 +1,48 @@
+FONTLOG for On Top
+==================
+
+This file provides detailed information on the On Top font software. This information should be
+distributed along with the On Top fonts and any derivative works.
+
+
+Basic Font Information
+----------------------
+
+On Top is a wide, heavy display typeface drawn from the ON TOP logo of @lrkqz. The logo holds
+four letters, O, N, T and P; every other glyph was designed in their logic, from measurements
+taken off the logo (docs/MEASUREMENTS.md), and drawn as vectors in code (sources/glyphs.py). No
+outline comes from another font.
+
+One style, Regular. Capitals only: the lower case is mapped to the capitals. Character set: GF
+Latin Core. Stylistic sets: ss01 round A, ss02 R with a long leg, ss03 S with square ends, ss04
+square E.
+
+The sources are Python: sources/geometry.py (the drawing primitives), sources/glyphs.py (every
+glyph and the rules it follows), sources/spacing.py (sidebearings and kerning). python build.py
+writes the UFO sources/OnTop-Regular.ufo and builds the fonts from it with gftools builder
+(sources/config.yaml).
+
+
+ChangeLog
+---------
+
+2026-10-18 (@lrkqz) On Top v1.000
+- Released under the SIL Open Font License 1.1 for Google Fonts.
+- GF Latin Core: the accents, the accented capitals, Æ Œ Ø Þ Đ Ð Ħ Ł, the signs ¢ £ ¥ © ® ™
+  § ¶ { } ¡ ¿ • ª º ^ ~ \ − ÷, the spacing and the combining accents, mark positioning.
+- Every new design chosen by @lrkqz from variants drawn to the face's rules.
+
+2026-10-17 (@lrkqz) ON TOP 1.000 (not published)
+- A–Z, Ä Ö Ü ẞ, the figures and the signs of a German interface, drawn from the ON TOP logo;
+  spacing and kerning calibrated on the logo.
+
+
+Acknowledgements
+----------------
+
+If you make modifications be sure to add your name (N), email (E), web-address (if you have one)
+(W) and description (D). This list is in alphabetical order.
+
+N: @lrkqz
+W: https://github.com/lrkqz
+D: Designer

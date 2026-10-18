@@ -119,6 +119,44 @@ the round A, C and D. He ordered:
   Euro's bar weight; = # _ carry the three-storey bar; 7 and ẞ have no overhang.
 - **S:** round ends; the square ends are `ss03`. **R:** the short leg; the long leg is `ss02`.
 
+## GF Latin Core (2026-10-17 and 18, for Google Fonts)
+
+Google asks for GF Latin Core (319 code points); the approved set had 115. The new glyphs follow
+the same rules; each new design was drawn in two or three variants, shown to @lrkqz in a review
+font where he switched between them (`build.py --review`), and he chose (`CHOSEN` in
+`sources/glyphs.py`, his numbers quoted there). Nothing approved before was touched:
+`tools/check_approved.py` compares every approved glyph, its metrics and its kerning with the
+1.000 build.
+
+| Rule | Value |
+|---|---|
+| Accents: place and weight | the dieresis': foot 100 above the caps (y 800), as heavy as the dots (190 upright, 150 flat: 0.72 of the letters' weight) |
+| Accents with two strokes and a counter (ˆ ˇ ˘ ˚ ~) | rise to 200, so the counter stays open |
+| Acute, grave, double acute (chosen: 1) | a stroke at the N's angle, its ends cut level, at the dots' weight; the double acute two of them, the dieresis' 150 apart |
+| Circumflex and caron (1) | pointed: two strokes 125 thick upright, 700 wide, 200 high; the caron the same turned over |
+| Tilde (2) | a square wave softened: arch and cup sharing their middle stroke, corners 160 × 110 |
+| Macron (2) | 530 wide (the dieresis' span), 120 high |
+| Breve (2) | the O's lower half, 560 × 150, its corners the O's scaled to the height |
+| Ring (2) | the approved degree sign at 0.86 |
+| Cedilla (2) | a short neck and a small bowl open on the left, to the descender |
+| Comma below (2), for Ș Ț and, as in Latvian, Ģ Ķ Ļ Ņ | the approved comma at 0.6 |
+| Ogonek (2) | a hook down from the right foot, turning right, its end turning up |
+| Ľ | the approved closing quote at the dots' size beside the stem |
+| Ø (2) | the slash's angle and 0.6 of its weight, through the O and 70 beyond it |
+| Đ Ð, Ħ, Ł (1) | the Euro's light bar (110): through the D's stem (130 out, 200 in), across the H above its crossbar (100 out each side), through the L's stem at the slash's angle |
+| Æ (2), Œ (2) | the E's three storeys (bars 172, counters 92) after the A's leg or the O's half; Œ three-storey throughout. The round A of ss01 leaves the Æ pointed (a round Æ reads as FE) |
+| Þ (1) | the P's bowl, centred on a stem that runs through |
+| ¢ (1) £ (1) ¥ (1) | the C with the $'s stroke standing out; the F's top on the L's foot with a light crossbar; the Y with two light bars |
+| © ® (1), ™ (2) | the @'s ring at the cap height around a small C or R; the face's own T and M at 280 high |
+| § (1), ¶ (2) | two S's run into one, four bars of 150, round ends; a pilcrow with an open bowl |
+| { } (2) | the bracket's arms on a stem set in, a tab at the middle, the parenthesis' corners |
+| ¡ ¿ (2) | the ! and ? turned, lowered to the descender (245) |
+| • (1), ª º (1), ^ (1) | a square 370 × 280; a small A and the degree's O raised, a bar under them; the circumflex large |
+| Derived without a new form | \ the slash mirrored, − the plus's bar, ÷ that bar with two dieresis dots, ~ the tilde at 1.45, ◌ eight dots at the * weight round the middle |
+| Combining marks | no width; anchors over the middle of every letter (the L: over its stem), under its foot and where the ogonek stands; a second mark stands 60 above the first |
+
+Lower case stays mapped to the capitals, the dotless i and j too.
+
 ## Spacing and kerning (`sources/spacing.py`)
 
 - **Sidebearings:** a straight side gets 72; a side that leaves white gets less, by 0.18 of its mean
@@ -135,6 +173,11 @@ the round A, C and D. He ordered:
   normal gap (L. becomes 144). A kern never brings two outlines nearer than 70 units in two
   dimensions over the full glyph height (100 with punctuation); pairs that are not kerned keep the
   distance their sidebearings give (the nearest, K T and K 7, 50).
+- **Letters with a mark or a stroke** (À … Ż, Ø Đ Ð Ħ Ł) keep their letter's advance and place, so
+  a wide accent reaches into the sidebearings (Ï), and kern as their letter; only where the mark
+  comes nearer the neighbour than the letters do, the pair opens: to 70 (100 with punctuation)
+  where the letters are kerned closer, else to 60 (Ï Ï). The new signs take the sidebearings of
+  the signs they are drawn from ({ } as [ ], ¡ as !, ª º ™ as °), the accents 60.
 
 ## How well "ON TOP" in the font falls on the image
 
